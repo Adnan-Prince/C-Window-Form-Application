@@ -1,0 +1,21 @@
+C:\Users\M.Adnan Ashraf\source\repos\Text TO Excel Exporter\Text TO Excel Exporter\bin\Debug\Text TO Excel Exporter.exe.config
+C:\Users\M.Adnan Ashraf\source\repos\Text TO Excel Exporter\Text TO Excel Exporter\bin\Debug\Text TO Excel Exporter.exe
+C:\Users\M.Adnan Ashraf\source\repos\Text TO Excel Exporter\Text TO Excel Exporter\bin\Debug\Text TO Excel Exporter.pdb
+C:\Users\M.Adnan Ashraf\source\repos\Text TO Excel Exporter\Text TO Excel Exporter\obj\Debug\Text TO Excel Exporter.csproj.AssemblyReference.cache
+C:\Users\M.Adnan Ashraf\source\repos\Text TO Excel Exporter\Text TO Excel Exporter\obj\Debug\Text_TO_Excel_Exporter.Form1.resources
+C:\Users\M.Adnan Ashraf\source\repos\Text TO Excel Exporter\Text TO Excel Exporter\obj\Debug\Text_TO_Excel_Exporter.Properties.Resources.resources
+C:\Users\M.Adnan Ashraf\source\repos\Text TO Excel Exporter\Text TO Excel Exporter\obj\Debug\Text TO Excel Exporter.csproj.GenerateResource.cache
+C:\Users\M.Adnan Ashraf\source\repos\Text TO Excel Exporter\Text TO Excel Exporter\obj\Debug\Text TO Excel Exporter.csproj.CoreCompileInputs.cache
+C:\Users\M.Adnan Ashraf\source\repos\Text TO Excel Exporter\Text TO Excel Exporter\obj\Debug\Text TO Excel Exporter.exe
+C:\Users\M.Adnan Ashraf\source\repos\Text TO Excel Exporter\Text TO Excel Exporter\obj\Debug\Text TO Excel Exporter.pdb
+C:\Users\M.Adnan Ashraf\source\repos\Text TO Excel Exporter\Text TO Excel Exporter\bin\Debug\Microsoft.IO.RecyclableMemoryStream.dll
+C:\Users\M.Adnan Ashraf\source\repos\Text TO Excel Exporter\Text TO Excel Exporter\bin\Debug\Microsoft.IO.RecyclableMemoryStream.xml
+C:\Users\M.Adnan Ashraf\source\repos\Text TO Excel Exporter\Text TO Excel Exporter\obj\Debug\Text TO Excel Exporter.csproj.CopyComplete
+C:\Users\M.Adnan Ashraf\source\repos\Text TO Excel Exporter\Text TO Excel Exporter\bin\Debug\ClosedXML.dll
+C:\Users\M.Adnan Ashraf\source\repos\Text TO Excel Exporter\Text TO Excel Exporter\bin\Debug\DocumentFormat.OpenXml.dll
+C:\Users\M.Adnan Ashraf\source\repos\Text TO Excel Exporter\Text TO Excel Exporter\bin\Debug\ExcelNumberFormat.dll
+C:\Users\M.Adnan Ashraf\source\repos\Text TO Excel Exporter\Text TO Excel Exporter\bin\Debug\System.IO.Packaging.dll
+C:\Users\M.Adnan Ashraf\source\repos\Text TO Excel Exporter\Text TO Excel Exporter\bin\Debug\ClosedXML.pdb
+C:\Users\M.Adnan Ashraf\source\repos\Text TO Excel Exporter\Text TO Excel Exporter\bin\Debug\ClosedXML.xml
+C:\Users\M.Adnan Ashraf\source\repos\Text TO Excel Exporter\Text TO Excel Exporter\bin\Debug\DocumentFormat.OpenXml.xml
+C:\Users\M.Adnan Ashraf\source\repos\Text TO Excel Exporter\Text TO Excel Exporter\bin\Debug\ExcelNumberFormat.xml
