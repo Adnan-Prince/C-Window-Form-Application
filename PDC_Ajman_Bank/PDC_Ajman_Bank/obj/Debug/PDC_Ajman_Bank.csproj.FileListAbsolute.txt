@@ -1,0 +1,14 @@
+E:\Adnan Projects\PDC_Ajman_Bank\PDC_Ajman_Bank\bin\Debug\PDC_Ajman_Bank.exe.config
+E:\Adnan Projects\PDC_Ajman_Bank\PDC_Ajman_Bank\bin\Debug\PDC_Ajman_Bank.exe
+E:\Adnan Projects\PDC_Ajman_Bank\PDC_Ajman_Bank\bin\Debug\PDC_Ajman_Bank.pdb
+E:\Adnan Projects\PDC_Ajman_Bank\PDC_Ajman_Bank\obj\Debug\PDC_Ajman_Bank.csproj.AssemblyReference.cache
+E:\Adnan Projects\PDC_Ajman_Bank\PDC_Ajman_Bank\obj\Debug\PDC_Ajman_Bank.Form1.resources
+E:\Adnan Projects\PDC_Ajman_Bank\PDC_Ajman_Bank\obj\Debug\PDC_Ajman_Bank.Properties.Resources.resources
+E:\Adnan Projects\PDC_Ajman_Bank\PDC_Ajman_Bank\obj\Debug\PDC_Ajman_Bank.csproj.GenerateResource.cache
+E:\Adnan Projects\PDC_Ajman_Bank\PDC_Ajman_Bank\obj\Debug\PDC_Ajman_Bank.csproj.CoreCompileInputs.cache
+E:\Adnan Projects\PDC_Ajman_Bank\PDC_Ajman_Bank\obj\Debug\PDC_Ajman_Bank.exe
+E:\Adnan Projects\PDC_Ajman_Bank\PDC_Ajman_Bank\obj\Debug\PDC_Ajman_Bank.pdb
+E:\Adnan Projects\PDC_Ajman_Bank\PDC_Ajman_Bank\bin\Debug\DocumentFormat.OpenXml.dll
+E:\Adnan Projects\PDC_Ajman_Bank\PDC_Ajman_Bank\bin\Debug\DocumentFormat.OpenXml.xml
+E:\Adnan Projects\PDC_Ajman_Bank\PDC_Ajman_Bank\obj\Debug\PDC_Ajman_Bank.csproj.CopyComplete
+E:\Adnan Projects\PDC_Ajman_Bank\PDC_Ajman_Bank\obj\Debug\PDC_Ajman_Bank.Form2.resources
