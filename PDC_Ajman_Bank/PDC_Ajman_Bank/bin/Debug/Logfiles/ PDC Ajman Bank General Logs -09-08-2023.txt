@@ -1,0 +1,122 @@
+10:55:50.973|Started....
+10:55:59.526|User irfan is logged on.
+10:56:32.605|Reading CSV files.....to get the Check status Id 
+10:56:32.605|1 CSV files found
+11:03:07.309|Started....
+11:03:27.645|User irfan is logged on.
+11:03:52.702|Reading CSV files.....to get the Check status Id 
+11:03:52.702|1 CSV files found
+11:03:52.704| Geting Records of Specific MICR
+11:03:53.141|Updating CheckStatus Id from BeneficiaryTransaction table
+11:03:53.300|Inserting history to BeneficiaryTransactionUser table
+11:03:53.306|Inserting history to BTHistory Table table
+11:03:53.309|Successfully records Updated ..
+11:03:53.309| Geting Records of Specific MICR
+11:03:53.474|Updating CheckStatus Id from BeneficiaryTransaction table
+11:03:53.640|Inserting history to BeneficiaryTransactionUser table
+11:03:53.641|Inserting history to BTHistory Table table
+11:03:53.641|Successfully records Updated ..
+11:04:00.986|Done !
+11:07:00.813|Reading CSV files.....to get the Check status Id 
+11:07:00.813|1 CSV files found
+11:07:00.814| Geting Records of Specific MICR
+11:07:00.972|Updating CheckStatus Id from BeneficiaryTransaction table
+11:07:01.168|Inserting history to BeneficiaryTransactionUser table
+11:07:01.169|Inserting history to BTHistory Table table
+11:07:01.170|Successfully records Updated ..
+11:07:01.170| Geting Records of Specific MICR
+11:07:01.352|Updating CheckStatus Id from BeneficiaryTransaction table
+11:07:01.518|Inserting history to BeneficiaryTransactionUser table
+11:07:01.519|Inserting history to BTHistory Table table
+11:07:01.520|Successfully records Updated ..
+11:07:04.666|Done !
+11:27:55.195|Started....
+11:28:04.829|User irfan is logged on.
+11:28:24.499|Reading CSV files.....to get the Check status Id 
+11:28:24.500|1 CSV files found
+11:28:24.502| Geting Records of Specific MICR
+11:28:24.674|Updating CheckStatus Id from BeneficiaryTransaction table
+11:28:24.851|Inserting history to BeneficiaryTransactionUser table
+11:28:24.855|Inserting history to BTHistory Table table
+11:28:24.856|Successfully records Updated ..
+11:28:24.857| Geting Records of Specific MICR
+11:28:25.010|Updating CheckStatus Id from BeneficiaryTransaction table
+11:28:25.181|Inserting history to BeneficiaryTransactionUser table
+11:28:25.182|Inserting history to BTHistory Table table
+11:28:25.183|Successfully records Updated ..
+11:28:27.669|Done !
+11:29:43.138|Started....
+11:29:50.578|User irfan is logged on.
+11:29:57.484|Reading CSV files.....to get the Check status Id 
+11:29:57.484|1 CSV files found
+11:29:57.486| Geting Records of Specific MICR
+11:29:57.645|Updating CheckStatus Id from BeneficiaryTransaction table
+11:29:57.806|Inserting history to BeneficiaryTransactionUser table
+11:29:57.809|Inserting history to BTHistory Table table
+11:29:57.811|Successfully records Updated ..
+11:29:57.811| Geting Records of Specific MICR
+11:29:57.961|Updating CheckStatus Id from BeneficiaryTransaction table
+11:29:58.143|Inserting history to BeneficiaryTransactionUser table
+11:29:58.145|Inserting history to BTHistory Table table
+11:29:58.145|Successfully records Updated ..
+11:29:59.952|Done !
+11:42:38.449|Started....
+11:42:45.348|User irfan is logged on.
+11:42:52.710|Reading CSV files.....to get the Check status Id 
+11:42:52.710|1 CSV files found
+11:42:52.712| Geting Records of Specific MICR
+11:42:52.867|Updating CheckStatus Id from BeneficiaryTransaction table
+11:42:53.020|Inserting history to BeneficiaryTransactionUser table
+11:42:53.023|Inserting history to BTHistory Table table
+11:42:53.024|Successfully records Updated ..
+11:42:53.024| Geting Records of Specific MICR
+11:42:53.176|Updating CheckStatus Id from BeneficiaryTransaction table
+11:42:53.331|Inserting history to BeneficiaryTransactionUser table
+11:42:53.332|Inserting history to BTHistory Table table
+11:42:53.333|Successfully records Updated ..
+11:42:55.234|Done !
+11:44:04.589|Started....
+11:44:12.665|User irfan is logged on.
+11:44:19.780|Reading CSV files.....to get the Check status Id 
+11:44:19.780|1 CSV files found
+11:44:19.781| Geting Records of Specific MICR
+11:44:19.966|Updating CheckStatus Id from BeneficiaryTransaction table
+11:44:20.148|Inserting history to BeneficiaryTransactionUser table
+11:44:20.150|Inserting history to BTHistory Table table
+11:44:20.151|Successfully records Updated ..
+11:44:20.151| Geting Records of Specific MICR
+11:44:20.303|Updating CheckStatus Id from BeneficiaryTransaction table
+11:44:20.463|Inserting history to BeneficiaryTransactionUser table
+11:44:20.464|Inserting history to BTHistory Table table
+11:44:20.465|Successfully records Updated ..
+11:44:22.256|Done !
+11:48:35.553|Started....
+11:48:48.109|User irfan is logged on.
+11:48:54.603|Reading CSV files.....to get the Check status Id 
+11:48:54.603|1 CSV files found
+11:48:54.605| Geting Records of Specific MICR
+11:48:54.764|Updating CheckStatus Id from BeneficiaryTransaction table
+11:48:54.948|Inserting history to BeneficiaryTransactionUser table
+11:48:54.950|Inserting history to BTHistory Table table
+11:48:54.952|Successfully records Updated ..
+11:48:54.953| Geting Records of Specific MICR
+11:48:55.109|Updating CheckStatus Id from BeneficiaryTransaction table
+11:48:55.271|Inserting history to BeneficiaryTransactionUser table
+11:48:55.272|Inserting history to BTHistory Table table
+11:48:55.272|Successfully records Updated ..
+11:48:57.418|Done !
+11:50:57.921|Started....
+11:51:19.422|User irfan is logged on.
+11:51:27.615|Reading CSV files.....to get the Check status Id 
+11:51:27.616|1 CSV files found
+11:51:27.617| Geting Records of Specific MICR
+11:51:27.774|Updating CheckStatus Id from BeneficiaryTransaction table
+11:51:27.931|Inserting history to BeneficiaryTransactionUser table
+11:51:27.934|Inserting history to BTHistory Table table
+11:51:27.935|Successfully records Updated ..
+11:51:27.936| Geting Records of Specific MICR
+11:51:28.091|Updating CheckStatus Id from BeneficiaryTransaction table
+11:51:28.250|Inserting history to BeneficiaryTransactionUser table
+11:51:28.251|Inserting history to BTHistory Table table
+11:51:28.251|Successfully records Updated ..
+11:51:30.418|Done !

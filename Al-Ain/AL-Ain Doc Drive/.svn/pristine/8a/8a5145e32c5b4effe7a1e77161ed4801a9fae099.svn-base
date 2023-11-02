@@ -1,0 +1,35 @@
+﻿@model System.Web.Mvc.HandleErrorInfo
+@{
+    ViewBag.Title = "Error";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>@ViewBag.Title</title>
+
+</head>
+<body>
+
+
+    <header class="app-header navbar"></header>
+
+    <div class="app-body">
+        <main class="main text-center">
+            <div class="container-fluid">
+                <div id="ui-view" class="p-t-20">
+                    <h1 class="text-danger">Error.</h1>
+                    <h2 class="text-danger ">License key has been expired, please contact system administrator. </h2>
+                </div>
+            </div>
+        </main>
+    </div>
+
+
+</body>
+</html>
+

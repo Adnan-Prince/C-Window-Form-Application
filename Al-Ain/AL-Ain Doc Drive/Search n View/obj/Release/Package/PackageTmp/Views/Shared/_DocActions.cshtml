@@ -1,0 +1,72 @@
+﻿@using Search_n_View.ViewModels;
+@{
+    ViewBag.Title = "Document Actions Filtered";
+    List<UserDocument> DocViewers = ViewData["DocPerformedAction"] as List<UserDocument>;
+
+
+}
+<div class="table-responsive">
+    <table class="table table-striped datatable">
+        <thead>
+            <tr>
+                <th class="text-center">Pharmacy</th>
+                <th class="text-center">Branch</th>
+                <th class="text-center">Time</th>
+                <th class="text-center">Uploaded</th>
+                <th class="text-center">Downloaded</th>
+                <th class="text-center">Emailed</th>
+                <th class="text-center">AddedNote</th>
+            </tr>
+        </thead>
+        <tbody class="AllDocActionsData">
+            @if (DocViewers != null)
+            {
+                for (int i = 0; i < DocViewers.Count(); i++)
+                {
+                    <tr>
+
+                        <td class="text-center">@DocViewers[i].ItemType </td>
+                        <td class="text-center">@DocViewers[i].DocumentType</td>
+                        <td class="text-center">@DocViewers[i].AddedTime.ToString("dd/MM/yyyy hh:mm:ss")</td>
+
+                        @if (DocViewers[i].DocUploaded)
+                        {
+                            <td class="text-center text-success">Yes</td>
+                        }
+                        else
+                        {
+                            <td class="text-center font-weight-bold">-</td>
+                        }
+                        @if (DocViewers[i].DocDownloaded)
+                        {
+                            <td class="text-center text-success">Yes</td>
+                        }
+                        else
+                        {
+                            <td class="text-center font-weight-bold">-</td>
+                        }
+                        @if (DocViewers[i].DocEmailed)
+                        {
+                            <td class="text-center"><a href="javascript:;" class="btn btn-success EmailDetail" data-toggle="modal" data-target="#EmailDetailModal" data-dochid="@DocViewers[i].DocHistoryId" title="Email Detail">Detail</a></td>
+                        }
+                        else
+                        {
+                            <td class="text-center font-weight-bold">-</td>
+                        }
+                        @if (DocViewers[i].DocAddedNote)
+                        {
+                            <td class="text-center"><a href="javascript:;" class="btn btn-success NoteDetail" data-toggle="modal" data-target="#NoteDetailModal" data-dochid="@DocViewers[i].DocHistoryId" title="Note Detail">Detail</a></td>
+                        }
+                        else
+                        {
+                            <td class="text-center font-weight-bold">-</td>
+                        }
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+</div>
+
+
+

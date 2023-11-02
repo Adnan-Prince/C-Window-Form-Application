@@ -1,0 +1,68 @@
+﻿@model Search_n_View.ViewModels.DocumentTypeViewModel
+@{
+    ViewBag.Title = "Create DocumentType";
+    string message = Convert.ToString(ViewData["Message"]);
+}
+
+
+<div>
+    <div class="animated fadeIn">
+        <div class="row">
+            <div class="col-sm-3"></div>
+            <div class="col-sm-6">
+                @using (Html.BeginForm("Create", "DocumentType", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+                {
+                    <div class="card">
+                        <div class="card-header">
+                            <h5>@ViewBag.Title</h5>
+                        </div>
+                        <div class="card-body">
+                            @Html.AntiForgeryToken()
+                            @Html.ValidationSummary("", new { @class = "text-danger" })
+
+                            @if (message != "")
+                            {
+                                <div class="form-group row">
+                                    <ul><li style="color: #f86c6b;">@message</li></ul>
+                                </div>
+                            }
+                            <div class="form-group row">
+                                @Html.LabelFor(m => m.Name, new { @class = "col-md-3 col-form-label font-weight-bold" })
+                                <span style="color: #f86c6b;font-weight:bold;font-size:20px;">*</span>
+                                <div class="col-md-8">
+                                    @Html.TextBoxFor(m => m.Name, new { @class = "form-control", @placeholder = "Enter Name" , tabindex = 1})
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                @Html.LabelFor(m => m.ItemTypes, new { @class = "col-md-3 col-form-label font-weight-bold" })
+                                <span style="color: #f86c6b;font-weight:bold;font-size:20px;">*</span>
+                                <div class="col-md-8">
+                                    <select class="form-control" tabindex="2" name="ItId">
+                                        <option value="0" >Select ItemType</option>
+                                        @foreach (var obj in Model.ItemTypes)
+                                        {
+                                            if (obj.Text != "All")
+                                            {
+                                                <option value="@Convert.ToInt32(obj.Value)">@obj.Text</option>
+                                            }
+                                        }
+
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <button class="btn btn-md btn-primary mr-3" type="submit">
+                                <i class="fa fa-dot-circle-o"></i> Create
+                            </button>
+                            <a class="btn btn-md btn-primary ml-3" href="@Url.Action("Index", "DocumentType")">
+                                <i class="fa fa-close"></i> Cancel
+                            </a>
+                        </div>
+                    </div>
+                }
+
+            </div>
+        </div>
+    </div>
+</div>

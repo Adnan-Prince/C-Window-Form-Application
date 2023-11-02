@@ -1,0 +1,5 @@
+12:39:43.104|Record with h000111g200320160gh3907633618h Updated Successfully
+12:39:43.419|Record with h000081g500310104gh3907621456h Updated Successfully
+12:39:43.719|Record with h290852g602440109gh0879255001h Updated Successfully
+12:39:43.720|E:\testing\08010856CL.csv contains 3 MICRs Rocords
+12:39:45.497|E:\testing\08010856CL.csv Processed Successfully 

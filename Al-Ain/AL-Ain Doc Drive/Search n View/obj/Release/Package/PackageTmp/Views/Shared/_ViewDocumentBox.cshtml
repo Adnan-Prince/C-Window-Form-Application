@@ -1,0 +1,87 @@
+﻿@{
+    var PageCount = ViewBag.PageCount;
+    var Email = ViewBag.Email;
+    var ScannedFilePath = ViewBag.ScannedFilePath;
+    var File = ViewBag.ImgFile;
+
+}
+@if (File != null)
+{
+    <input type="hidden" id="EmailDetail" value='@Json.Encode(Email)'>
+    <input type="hidden" id="ScannedFilePath" value='@ScannedFilePath'>
+    <input type="hidden" id="ScannerConnection" value="true">
+    if (PageCount > 0)
+    {
+        <p class="text-center" style="margin-bottom:0.5rem;">Total Pages : <b>@PageCount</b></p>
+    }
+    <div class="anchor">
+        @if (File != null)
+        {
+            if (File.Contains("pdf") || File.Contains("PDF") || File.Contains("jpg") || File.Contains("jpeg") || File.Contains("png") || File.Contains("txt") || File.Contains("TXT"))
+            {
+                if (TempData["File"] != null)
+                {
+                    if (File.Contains("pdf") || File.Contains("PDF"))
+                    {
+                        <div class="PdfViewer">
+                            @Html.Raw(TempData["File"])
+                        </div>
+                    }
+
+                    if (File.Contains("jpg") || File.Contains("jpeg") || File.Contains("png"))
+                    {
+                        <div class="ImageViewer">
+                            @Html.Raw(TempData["File"])
+                        </div>
+                    }
+
+                    if (File.Contains("txt") || File.Contains("TXT"))
+                    {
+                        <div class="TextViewer">
+                            @Html.Raw(TempData["File"])
+                        </div>
+                    }
+
+                }
+                else
+                {
+                    <br>
+                    <h3 class="text-center">File Not Found</h3>
+                }
+
+            }
+            else if (File.Contains("tif") || File.Contains("TIF"))
+            {
+                if (TempData["File"] != null)
+                {
+                    <div class="TiffImage" data-path="@TempData["File"]">
+                    </div>
+                }
+                else
+                {
+                    <br>
+                    <h3 class="text-center">File Not Found</h3>
+                }
+            }
+            else
+            {
+                if (TempData["File"] != null)
+                {
+                    <p class="text-center AnotherFormat">File of This Format Can Download Only!</p>
+                    <h1 class="text-center" style="font-size:40px;"><a class="DownloadDocument" href="@TempData["File"]">Download File Here</a></h1>
+                }
+                else
+                {
+                    <br>
+                    <h3 class="text-center">File Not Found</h3>
+                }
+            }
+        }
+    </div>
+}
+else
+{
+     <input type="hidden" id="ScannerConnection" value="false">
+}
+
+

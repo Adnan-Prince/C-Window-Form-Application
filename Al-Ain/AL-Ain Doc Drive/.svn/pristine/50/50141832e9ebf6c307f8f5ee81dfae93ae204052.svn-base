@@ -1,0 +1,502 @@
+﻿@using Search_n_View.ViewModels;
+@{
+    ViewBag.Title = "Action History";
+    List<UserDocument> DocViewers = ViewData["DocPerformedAction"] as List<UserDocument>;
+    var Users = ViewBag.Users;
+    var ItemTypeList = ViewBag.ItemTypeList;
+    var DocumentTypeList = ViewBag.DocumentTypeList;
+}
+
+@section styles {
+    <style>
+
+        label {
+            font-size: 12px;
+        }
+
+        input[type=checkbox] {
+            margin: 0px 0px 0px 2px;
+            vertical-align: middle;
+        }
+
+        .AccessBox {
+            margin-top: 5px;
+        }
+
+        .DocFilters {
+            font-size: 13px;
+        }
+
+        td .btn-primary {
+            padding: .175rem .55rem;
+        }
+
+        #Users:focus {
+            outline: 3px solid #ddd;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #fff;
+            min-width: 289px;
+            overflow: auto;
+            z-index: 1;
+            border: 1px solid gray;
+        }
+
+        .dropdown a:hover {
+            background-color: #ddd;
+        }
+
+        .show {
+            display: block;
+        }
+
+        .dropdown-content a {
+            color: dimgray;
+            padding: 0px 10px;
+            text-decoration: none;
+            display: block;
+            background-color: #fff;
+            cursor: pointer;
+        }
+
+        .btn-success {
+            padding: .175rem .55rem;
+            cursor: pointer;
+        }
+
+        .text-success {
+            color: #0b9c3d !important;
+        }
+    </style>
+    <link href="~/Content/daterangepicker.min.css" rel="stylesheet" />
+}
+
+
+<div class="row col-md-12 ">
+    <h5>Documents Action</h5>
+</div>
+
+<div class="DocumentActions">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card ">
+                <div class="card-header">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <input type="text" name="dates" class="form-control DocFilters DocFilterDate" placeholder="Date Range" />
+                                    <input type="hidden" class="DateSelected" value="0">
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="dropdown">
+                                        <input type="text" style="background-color:#fff;color: dimgray;" data-userid="" class="form-control" placeholder="Users" id="Users" onkeyup="filterFunction()" autocomplete="off">
+                                        <div id="myDropdown" class="dropdown-content">
+                                            @for (int i = 0; i < Users.Count; i++)
+                                            {
+                                                <a class="UserName" data-userid="@Users[i].Id">@Users[i].UserName</a>
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <select class="form-control ItemTypeList">
+                                        <option value="0" data-shortname="0">Select ItemType</option>
+                                        @for (int i = 0; i < ItemTypeList.Count; i++)
+                                        {
+                                            if (ItemTypeList[i].Name != "All")
+                                            {
+                                                <option value="@ItemTypeList[i].Id">@ItemTypeList[i].Name</option>
+                                            }
+                                        }
+                                    </select>
+                                </div>
+                                <div class="col-md-3">
+                                    <select class="form-control DocumentTypeList DocFilters">
+                                        <option value="0">Select DocumentType</option>
+
+
+
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="row">
+                                <div class="col-md-3 AccessBox text-center">
+                                    <label>Added Note</label><input type="checkbox" name="Access" id="AddedNote">
+                                </div>
+                                <div class="col-md-3 AccessBox  text-center">
+                                    <label>Emailed</label><input type="checkbox" name="Access" id="Emailed">
+                                </div>
+                                <div class="col-md-3 AccessBox  text-center">
+                                    <label>Uploaded</label><input type="checkbox" name="Access" id="Uploaded">
+                                </div>
+                                <div class="col-md-3 AccessBox  text-center">
+                                    <label>Downloaded</label><input type="checkbox" name="Access" id="Downloaded">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <button id="FilterDocActions" class="btn-primary" style="margin-top:4px;width:100%;">Filter</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body AllDocActions">
+                <div class="table-responsive">
+                    <table class="table table-striped datatable">
+                        <thead>
+                            <tr>
+                                <th class="text-center">ItemType</th>
+                                <th class="text-center">DocumentType</th>
+                                <th class="text-center">Time</th>
+                                <th class="text-center">Uploaded</th>
+                                <th class="text-center">Downloaded</th>
+                                <th class="text-center">Emailed</th>
+                                <th class="text-center">AddedNote</th>
+                            </tr>
+                        </thead>
+                        <tbody class="AllDocActionsData">
+                            @if (DocViewers != null)
+                            {
+                                for (int i = 0; i < DocViewers.Count; i++)
+                                {
+                            <tr>
+                                <td class="text-center">@DocViewers[i].ItemType</td>
+                                <td class="text-center">@DocViewers[i].DocumentType</td>
+                                <td class="text-center">@DocViewers[i].AddedTime.ToString("dd/MM/yyyy HH:mm:ss")</td>
+
+                                @if (DocViewers[i].DocUploaded)
+                                {
+                                    <td class="text-center">Yes</td>
+                                }
+                                else
+                                {
+                                    <td class="text-center">No</td>
+                                }
+                                @if (DocViewers[i].DocDownloaded)
+                                {
+                                    <td class="text-center">Yes</td>
+                                }
+                                else
+                                {
+                                    <td class="text-center">No</td>
+                                }
+                                @if (DocViewers[i].DocEmailed)
+                                {
+                                    <td class="text-center"><a href="javascript:;" class="btn btn-warning EmailDetail" title="Email Detail" data-toggle="modal" data-target="#EmailDetailModal">Detail</a></td>
+                                }
+                                else
+                                {
+                                    <td class="text-center">No</td>
+                                }
+                                @if (DocViewers[i].DocAddedNote)
+                                {
+                                    <td class="text-center"><a href="javascript:;" class="btn btn-warning NoteDetail" title="Note Detail" data-toggle="modal" data-target="#NoteDetailModal">Detail</a></td>
+                                }
+                                else
+                                {
+                                    <td class="text-center">No</td>
+                                }
+
+                            </tr>
+                                }
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td class="text-center" colspan="10">No Record Found</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+<div class="modal fade" id="EmailDetailModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-primary" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Email Detail</h4>
+                <button class="close closeModal" type="button" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th class="text-center">DocumentType</th>
+                                    <th class="text-center">Recipients</th>
+                                    <th class="text-center">Bcc</th>
+                                    <th class="text-center">Subject</th>
+                                    <th class="text-center">Body</th>
+                                    <th class="text-center">Emailed By</th>
+                                </tr>
+                            </thead>
+                            <tbody id="EmailDetailRows"></tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-warning closeModal" type="button" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+        <!-- /.modal-content-->
+    </div>
+</div>
+
+<div class="modal fade" id="NoteDetailModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-primary" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Note Detail</h4>
+                <button class="close closeModal" type="button" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th class="text-center">User Note</th>
+                                    <th class="text-center">Added By</th>
+                                </tr>
+                            </thead>
+                            <tbody id="NoteDetailRows"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-warning closeModal" type="button" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+    <!-- /.modal-content-->
+</div>
+
+
+@section Scripts {
+    <script src="~/Scripts/moment.js"></script>
+    <script src="~/Scripts/daterangepicker.js"></script>
+    <script>
+    $(document).ready(function () {
+         $('.DocFilterDate').daterangepicker({
+                locale: {
+                      format: 'DD/MM/YYYY',
+                }
+
+            });
+
+          $(document).on("click", ".applyBtn", function () {
+                $(".DateSelected").val(1);
+          })
+
+        
+           $(document).on("click", ".cancelBtn", function () {
+                    $('.DocFilterDate').val("");
+                $('.DocFilterDate').daterangepicker({
+                    locale: {
+                        format: 'DD/MM/YYYY'
+                    }
+                });
+                   $(".DateSelected").val(0);
+           })
+
+        $(document).on("click", "#Users", function () {
+            if ( $("#myDropdown").hasClass('show')) {
+                $("#myDropdown").removeClass("show");
+            } else {
+                  $("#myDropdown").addClass("show");
+            }
+        })
+
+        $(document).on("click", ".UserName", function () {
+            $("#Users").val($(this).text());
+            $("#Users").data('userid', $(this).data('userid'));
+            $(".dropdown-content").removeClass("show");
+        })
+
+        $(document).on("click", function(e) {
+            if (e.target.className !== "form-control") {
+                $("#myDropdown").removeClass("show");
+            }
+        })
+
+        
+          $(".ItemTypeList").change(function () {
+                if ($(".ItemTypeList option:selected").val() > 0) {
+                     $(".DocumentTypeList").html(""); 
+                    $.ajax({
+                        type: 'POST',
+                        url: '@Url.Action("GetUserDocTypes","Document")',
+                        data: { ItemTypeId: parseInt($(".ItemTypeList option:selected").val()) },
+                        success: function (data) {
+                            var html = "<option value='0'>Select DocumentType</option>";
+                            for (var i = 0; i < data.length; i++) {                              
+                                    html += "<option value=" + data[i].Id + ">" + data[i].Name + "</option>";                              
+                            }
+                            $(".DocumentTypeList").append(html);                           
+                        }
+                    });
+                }
+                
+            })
+
+
+        $(document).on("click", "#FilterDocActions", function () {
+
+             var DocDates;
+                var FromDate = "";
+                var ToDate = "";
+                if ($(".DateSelected").val() > 0) {
+                    DocDates = $(".DocFilterDate").val();
+                    DocDates = DocDates.split(' - ')
+                    FromDate = DocDates[0].split('/');
+                    FromDate = FromDate[1] + "/" + FromDate[0] + "/" + FromDate[2];
+
+                    ToDate = DocDates[1].split('/');
+                    ToDate = ToDate[1] + "/" + ToDate[0] + "/" + ToDate[2];
+                }
+
+            var UserId = $("#Users").data('userid');
+            var itid = parseInt($(".ItemTypeList option:selected").val());
+            var dtid = parseInt($(".DocumentTypeList option:selected").val());
+
+
+            var Emailed = $("#Emailed").prop("checked");
+            var Uploaded = $("#Uploaded").prop("checked");
+            var Downloaded = $("#Downloaded").prop("checked");
+            var AddedNote = $("#AddedNote").prop("checked");
+                    $.ajax({
+                            type: 'POST',
+                            url: '@Url.Action("ActionHistoryFiltered","Document")',
+                            beforeSend: function () {
+                                $("#cover-spin").show();
+                            },
+                            data: { From: FromDate, To: ToDate, UId: UserId, ItId :itid, DtId: dtid, Email: Emailed, Upload: Uploaded, Download: Downloaded, AddNote: AddedNote },
+                            complete: function () {
+                                setTimeout(function () { $("#cover-spin").hide(); }, 1000);
+                            },
+                            success: function (data) {
+                                if (data != null) {
+                                    if (data.length > 0) {
+                                        $(".AllDocActions").html("");
+                                        $(".AllDocActions").html(data);
+                                        $('.datatable').DataTable({ "paging": true, "info": true, "ordering": false, "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]], "language": { "emptyTable": "No Record Found" } }); $('.datatable').attr('style', 'border-collapse: collapse !important');
+                                    }
+                                }
+                                if ($(".AllDocActionsData").find("tr").length == 0)
+                                    $(".AllDocActionsData").html("<tr><td class='text-center' colspan='5'>No Record Foound</td></tr>");
+                            }
+                        })
+
+        })
+
+           $(document).on("click", ".EmailDetail", function () {
+               var dochId = $(this).data('dochid');
+               var html = "";
+                $.ajax({
+                    type: 'POST',
+                    url: '@Url.Action("ShowEmailDetail","Document")',
+                    beforeSend: function () {
+                        $("#cover-spin").show();
+                    },
+                    data: { DocHId: dochId },
+                    complete: function () {
+                        setTimeout(function () { $("#cover-spin").hide(); }, 1000);
+                    },
+                    success: function (data) {
+                        if (data != null) {
+                            html += "<tr>"
+                                        + "<td class='text-center'>" + data.EmailRecipients + "</td>";
+                                        if (data.EmailBccRecipients != null) {
+                                            html += "<td class='text-center'>" + data.EmailBccRecipients + "</td>";
+                                        } else {
+                                            html += "<td class='text-center'>-</td>";
+                                        }
+                                       html += "<td class='text-center'>"+data.EmailSubject+"</td>"
+                                        + "<td class='text-center'>"+data.EmailBody+"</td>"
+                                        + "<td class='text-center'>" + data.UserEmail + "</td>"
+                                + "</tr>";
+                            $("#EmailDetailRows").html("");
+                            $("#EmailDetailRows").html(html);
+                        }
+                    }
+                })
+
+           })
+
+
+           $(document).on("click", ".NoteDetail", function () {
+               var dochId = $(this).data('dochid');
+               var html = "";
+                $.ajax({
+                    type: 'POST',
+                    url: '@Url.Action("ShowNoteDetail","Document")',
+                    beforeSend: function () {
+                        $("#cover-spin").show();
+                    },
+                    data: { DocHId: dochId },
+                    complete: function () {
+                        setTimeout(function () { $("#cover-spin").hide(); }, 1000);
+                    },
+                    success: function (data) {
+                        if (data != null) {
+                            html += "<tr>"
+                                       +  "<td class='text-center'>" + data.UserNote + "</td>"
+                                     + "<td class='text-center'>"+data.UserEmail+"</td>"
+                                + "</tr>";
+                            $("#NoteDetailRows").html("");
+                            $("#NoteDetailRows").html(html);
+                        }
+                    }
+                })
+
+        })
+
+         $('#Users').keyup(function () {
+            if ($(this).val().length == 0)
+               $(this).data("userid", "");
+            })
+    })
+
+        function filterFunction() {
+            var input, filter, ul, li, a, i, content;
+              content = document.getElementById("myDropdown");
+              content.classList.add('show');
+            input = document.getElementById("Users");
+            filter = input.value.toUpperCase();
+            div = document.getElementById("myDropdown");
+            a = div.getElementsByTagName("a");
+            for (i = 0; i < a.length; i++) {
+            txtValue = a[i].textContent || a[i].innerText;
+            if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                a[i].style.display = "block";
+
+            } else {
+                a[i].style.display = "none";
+            }
+            }
+    }
+    </script>
+}

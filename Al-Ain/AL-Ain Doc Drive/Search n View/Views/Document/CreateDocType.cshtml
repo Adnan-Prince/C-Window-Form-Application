@@ -1,0 +1,66 @@
+﻿@model Search_n_View.ViewModels.ManageDocumentTypesViewModel
+@{
+    ViewBag.Title = "Create Document Type";
+    string message = Convert.ToString(ViewData["Message"]);
+}
+
+
+<div class="animated fadeIn">
+    <div class="row">
+        <div class="col-sm-3"></div>
+        <div class="col-sm-6">
+            @using (Html.BeginForm("CreateDocType", "Document", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+            {
+                <div class="card">
+                    <div class="card-header">
+                        <strong>Create New Document Type</strong>
+                    </div>
+                    <div class="card-body">
+                        @Html.AntiForgeryToken()
+                        @Html.ValidationSummary("", new { @class = "text-danger" })
+
+                        @if (message != "")
+                        {
+                            <div class="form-group row">
+                                <ul><li style="color: #f86c6b;">@message</li></ul>
+                            </div>
+                        }
+                    <div class="form-group row">
+                        <label class="col-md-2 col-form-label font-weight-bold">Type</label>
+                        <span style="color: #f86c6b;font-weight:bold;font-size:20px;">*</span>
+                        <div class="col-md-9">
+                            @Html.TextBoxFor(m => m.Type, new { @class = "form-control ", @placeholder = "Enter Name" ,tabindex = 1})
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-md-2 col-form-label font-weight-bold">Code</label>
+                        <span style="color: #f86c6b;font-weight:bold;font-size:20px;">*</span>
+                        <div class="col-md-9">
+                            @Html.TextBoxFor(m => m.DocumentTypeCode, new { @class = "form-control", @placeholder = "Enter Code" ,tabindex = 2})
+                        </div>
+                    </div>
+                        <div class="form-group row">
+                            <label class="col-md-2 col-form-label font-weight-bold" style="font-size:13.1px;">Category</label>
+                            <span style="color: #f86c6b;font-weight:bold;font-size:20px;">*</span>
+                            <div class="col-md-9">
+                                @Html.DropDownListFor(model => model.DcId, Model.DocumentCategoryList, "Document Categories", htmlAttributes: new { @class = "form-control" ,tabindex = 3})
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="card-footer">
+                        <button class="btn btn-md btn-primary mr-3" type="submit" tabindex = "4">
+                            <i class="fa fa-dot-circle-o"></i> Create
+                        </button>
+                        <a class="btn btn-md btn-primary ml-3" href="@Url.Action("DocumentTypes", "Document")" tabindex = "5">
+                            <i class="fa fa-close"></i> Cancel
+                        </a>
+                    </div>
+                </div>
+            }
+
+        </div>
+    </div>
+</div>
+
+

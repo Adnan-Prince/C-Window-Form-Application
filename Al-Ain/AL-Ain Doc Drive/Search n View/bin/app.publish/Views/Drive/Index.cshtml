@@ -1,0 +1,77 @@
+﻿@model Search_n_View.ViewModels.ManageDriveViewModel
+@{
+    ViewBag.Title = "Manage Drive";
+}
+
+
+<div>
+    <div class="animated fadeIn">
+        <div class="card">
+            <div class="card-header">
+                <i class="fa fa-address-card"></i> Drives
+                <div class="card-header-actions">
+                    <a class="btn btn-info" href="@Url.Action("Create", "Drive")">
+                        <i class="fa fa-plus"></i> Add Drive
+                    </a>
+                </div>
+            </div>
+            <div class="card-body">
+                <table class="table table-striped table-responsive-sm datatable">
+                    <thead>
+                        <tr>
+                            <th class="text-center">Drive</th>
+                            <th class="text-center">Added By</th>
+                            <th class="text-center">Added Date</th>
+                            <th class="no-sort text-center">State</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @*@foreach (var D in Model.Drive)*@
+                        @for (int i = 0; i < Model.Drive.Count(); i++)
+
+                        {
+                        <tr>
+                            @if (Model.Drive[i].BasePath != null)
+                            {
+                                <td class="text-center">@Model.Drive[i].BasePath</td>
+                            }
+                            else
+                            {
+                                <td class="text-center">-</td>
+                            }
+                            @if (Model.Drive[i].AddedBy != null)
+                            {
+                                <td class="text-center">@Model.Drive[i].AddedBy</td>
+                            }
+                            else
+                            {
+                                <td class="text-center">-</td>
+                            }
+                            @if (Model.Drive[i].AddedTime != null)
+                            {
+                                <td class="text-center">@Model.Drive[i].AddedTime.ToString("dd MMM yyyy HH:mm")</td>
+                            }
+                            else
+                            {
+                                <td class="text-center">-</td>
+                            }
+                            <td class="text-center">
+                                <a class="activeToggle" title="Edit" data-driveid="@Model.Drive[i].Id">
+                                    @if (Model.Drive[i].IsActive)
+                                    {
+                                        <span class="font-weight-bold text-success">Active</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="font-weight-bold text-warning">InActive</span>
+                                    }
+                                </a>
+                            </td>
+                        </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

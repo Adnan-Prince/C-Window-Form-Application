@@ -1,0 +1,55 @@
+﻿@model Search_n_View.ViewModels.ManageDepartmentViewModel
+@{
+    ViewBag.Title = "Manage Department";
+}
+
+@section styles {
+    <style>
+        td .btn-primary, .btn-danger {
+            padding: .175rem .55rem;
+        }
+    </style>
+}
+<div>
+    <div class="animated fadeIn">
+        <div class="card">
+            <div class="card-header">
+                <i class="fa fa-address-card"></i> Departments
+                <div class="card-header-actions">
+                    <a class="btn btn-info" href="@Url.Action("Create", "Department")">
+                        <i class="fa fa-plus"></i> Add Department
+                    </a>
+                </div>
+            </div>
+            <div class="card-body">
+                <table class="table table-striped table-responsive-sm datatable">
+                    <thead>
+                        <tr>
+                            <th class="text-center">Name</th>
+                            <th class="text-center">AddedBy</th>
+                            <th class="text-center">AddedDate</th>
+                            <th class="no-sort text-center">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @for (int i = 0; i < Model.Department.Count(); i++)
+           
+                            {
+                                <tr>                                 
+                                        <td class="text-center">@Model.Department[i].Name</td>                                                               
+                                        <td class="text-center">@Model.Department[i].CreatedBy</td>                                                                  
+                                        <td class="text-center">@Model.Department[i].AddedTime.ToString("dd MMM yyyy HH:mm")</td>
+                                   
+                                    <td class="text-center">
+                                        <a class="btn btn-primary" title="Edit" href="@Url.Action("Edit", "Department", new { Id = Model.Department[i].Id })">
+                                            <i class="fa fa-edit"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

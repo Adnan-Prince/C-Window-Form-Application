@@ -1,0 +1,70 @@
+11:04:15.211|Started....
+11:04:23.541|User irfan is logged on.
+11:04:34.964|Reading CSV files.....to get the Check status Id 
+11:04:34.965|1 CSV files found
+11:04:34.966| Geting Records of Specific MICR
+11:04:35.463|Updating CheckStatus Id from BeneficiaryTransaction table
+11:04:35.631|Inserting history to BeneficiaryTransactionUser table
+11:04:35.640|Inserting history to BTHistory Table table
+11:04:35.645|Successfully records Updated ..
+11:04:35.645| Geting Records of Specific MICR
+11:04:35.805|Updating CheckStatus Id from BeneficiaryTransaction table
+11:04:35.960|Inserting history to BeneficiaryTransactionUser table
+11:04:35.962|Inserting history to BTHistory Table table
+11:04:35.962|Successfully records Updated ..
+11:04:35.962| Geting Records of Specific MICR
+11:04:36.111|Updating CheckStatus Id from BeneficiaryTransaction table
+11:04:36.273|Inserting history to BeneficiaryTransactionUser table
+11:04:36.275|Inserting history to BTHistory Table table
+11:04:36.277|Successfully records Updated ..
+11:04:38.218|Done !
+11:26:39.185|Started....
+11:26:47.914|User irfan is logged on.
+11:30:02.830|Started....
+11:30:13.238|User irfan is logged on.
+11:30:23.403|Reading CSV files.....to get the Check status Id 
+11:30:23.404|1 CSV files found
+11:30:23.405| Geting Records of Specific MICR
+11:30:23.568|Updating CheckStatus Id from BeneficiaryTransaction table
+11:30:23.730|Inserting history to BeneficiaryTransactionUser table
+11:30:23.734|Inserting history to BTHistory Table table
+11:30:23.736|Successfully records Updated ..
+11:30:23.737| Geting Records of Specific MICR
+11:30:23.886|Updating CheckStatus Id from BeneficiaryTransaction table
+11:30:24.048|Inserting history to BeneficiaryTransactionUser table
+11:30:24.049|Inserting history to BTHistory Table table
+11:30:24.049|Successfully records Updated ..
+11:30:24.050| Geting Records of Specific MICR
+11:30:24.198|Updating CheckStatus Id from BeneficiaryTransaction table
+11:30:24.346|Inserting history to BeneficiaryTransactionUser table
+11:30:24.348|Inserting history to BTHistory Table table
+11:30:24.348|Successfully records Updated ..
+11:30:26.256|Done !
+11:32:08.130|Started....
+11:32:18.215|User irfan is logged on.
+11:42:44.261|Started....
+11:42:57.167|User irfan is logged on.
+11:48:34.787|Started....
+11:48:42.450|User irfan is logged on.
+12:05:37.175|Started....
+12:05:45.358|User irfan is logged on.
+12:13:22.549|Started....
+12:13:30.162|User irfan is logged on.
+12:18:49.513|Started....
+12:19:06.397|Started....
+12:19:13.241|User irfan is logged on.
+12:29:19.597|Started....
+12:29:26.531|User irfan is logged on.
+12:35:36.196|Started....
+12:35:45.928|User irfan is logged on.
+12:50:32.203|Started....
+12:50:43.074|User irfan is logged on.
+12:54:04.428|Started....
+12:54:12.320|User irfan is logged on.
+12:57:22.933|Started....
+12:59:28.890|Started....
+12:59:36.704|User irfan is logged on.
+13:01:12.506|Started....
+13:01:21.889|User irfan is logged on.
+15:29:11.552|Started....
+15:29:22.075|User irfan is logged on.

@@ -1,0 +1,4 @@
+SELECT  count(distinct(BoxNumber)) as 'Total Boxes', count(BoxNumber) as 'Total File Barcode' 
+FROM DataEntries
+INNER JOIN TblUsers ON DataEntries.UserName = 'user3'
+where EntryDate ='2023-10-13';

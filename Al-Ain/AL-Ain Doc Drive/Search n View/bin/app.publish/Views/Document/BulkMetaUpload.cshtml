@@ -1,0 +1,115 @@
+﻿
+@{
+    ViewBag.Title = "BulkMetaUpload";
+}
+
+<h3>Bulk Meta Data Upload</h3>
+
+<div class="row">
+    <div class="col-md-6">
+        <button style="" class="btn btn-primary BulkUpload" data-toggle="modal" data-target="#UploadBulk">Bulk Upload</button>
+    </div>
+</div>
+
+<div class="modal fade" id="UploadBulk" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-md modal-primary" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Bulk Data Upload</h4>
+                <button class="close closeModal" type="button" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <input type="file" id="BulkUpload" data-bulkfileupload="" name="file">
+                    <button type="button" class="btn btn-primary BulkDataUpload" data-dismiss="modal" style="display:none;">Upload</button>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-warning closeModal" type="button" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+    <!-- /.modal-content-->
+</div>
+
+@section Scripts {
+
+    <script>
+        $(document).ready(function () {
+
+            $("#BulkUpload").change(function () {
+                var fileUpload = $("#BulkUpload").get(0);
+                var files = fileUpload.files;
+                var fileData = new FormData();
+                for (var i = 0; i < files.length; i++) {
+                    fileData.append(files[i].name, files[i]);
+                }
+                fileData.append('BulkFile', 'csvFile');
+                $(this).data("bulkfileupload", fileData);
+
+                if ($("#BulkUpload").data("bulkfileupload") != "")
+                    $(".BulkDataUpload").fadeIn();
+                else
+                    $(".BulkDataUpload").hide();
+            })
+
+            $(document).on("click", ".BulkDataUpload", function () {
+
+                var BulkUpload = $("#BulkUpload").data("bulkfileupload");
+                if (BulkUpload != "") {
+                    $.ajax({
+                        type: 'POST',
+                        url: '@Url.Action("BulkDataUpload", "Document")',
+                        processData: false,
+                        contentType: false,
+                        data: BulkUpload,
+                        beforeSend: function () {
+                            $("#cover-spin").show();
+                        },
+                        complete: function () {
+                            setTimeout(function () { $("#cover-spin").hide(); }, 1000);
+                        },
+                        success: function (data) {
+                            if (data.DocCount > 0) {
+                                $("#BulkUpload").val("");
+                                $("#BulkUpload").data("bulkfileupload", "")
+                                $(".BulkDataUpload").hide();
+                                Swal.fire({
+                                    title: '' + data.DocCount + ' Records!',
+                                    text: 'Successfully Uploaded',
+                                    type: 'success',
+                                    showCancelButton: false,
+                                    showConfirmButton: true
+                                })
+
+                            } else {
+                                  Swal.fire({
+                                    title: 'Warning',
+                                    text: data.Message,
+                                    type: 'warning',
+                                    showCancelButton: false,
+                                    showConfirmButton: true
+                                })
+                            }
+                        }
+                    })
+                } else {
+                    alert("Please Add File First.")
+                }
+
+            })
+
+            $(document).on("click", ".closeModal", function () {
+                $("#BulkUpload").val("");
+                $("#BulkUpload").data("bulkfileupload", "");
+
+                if ($("#BulkUpload").data("bulkfileupload") == "")
+                    $(".BulkDataUpload").hide();
+
+            })
+
+        })
+    </script>
+    }

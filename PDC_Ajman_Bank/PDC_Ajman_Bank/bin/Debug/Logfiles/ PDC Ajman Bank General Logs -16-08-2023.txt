@@ -1,0 +1,106 @@
+09:40:42.152|Started....
+09:40:50.479|User irfan is logged on.
+09:45:52.948|Started....
+10:20:41.245|Started....
+10:20:50.628|User irfan is logged on.
+10:56:54.699|Started....
+11:02:42.273|Started....
+11:02:51.371|User irfan is logged on.
+13:01:39.793|Started....
+13:01:47.278|User irfan is logged on.
+13:01:54.073|Reading CSV files.....to get the Check status Id 
+13:01:54.074|1 CSV files found
+13:01:54.075| Geting Records of Specific MICR
+13:01:54.533|Updating CheckStatus Id from BeneficiaryTransaction table
+14:09:37.547|Started....
+14:09:52.816|User irfan is logged on.
+14:10:00.044|Reading CSV files.....to get the Check status Id 
+14:10:00.045|1 CSV files found
+14:10:00.047| Geting Records of Specific MICR
+14:10:05.119|Updating CheckStatus Id from BeneficiaryTransaction table
+14:14:24.754|Started....
+14:14:32.115|User irfan is logged on.
+14:14:40.222|Reading CSV files.....to get the Check status Id 
+14:14:40.222|1 CSV files found
+14:14:40.224| Geting Records of Specific MICR
+14:14:46.808|Updating CheckStatus Id from BeneficiaryTransaction table
+14:23:40.002|Started....
+14:27:55.642|User irfan is logged on.
+14:28:01.914|Reading CSV files.....to get the Check status Id 
+14:28:01.915|1 CSV files found
+14:28:01.916| Geting Records of Specific MICR
+14:28:06.228|Updating CheckStatus Id from BeneficiaryTransaction table
+14:30:17.442|Started....
+14:30:28.937|User irfan is logged on.
+14:30:35.130|Reading CSV files.....to get the Check status Id 
+14:30:35.131|1 CSV files found
+14:30:35.132| Geting Records of Specific MICR
+14:30:39.361|Updating CheckStatus Id from BeneficiaryTransaction table
+14:34:35.674|Started....
+14:34:45.155|User irfan is logged on.
+14:34:51.064|Reading CSV files.....to get the Check status Id 
+14:34:51.064|1 CSV files found
+14:34:51.065| Geting Records of Specific MICR
+14:34:54.540|Updating CheckStatus Id from BeneficiaryTransaction table
+14:35:11.552|Inserting history to BeneficiaryTransactionUser table
+14:35:11.561|Inserting history to BTHistory Table table
+14:35:11.564|Successfully records Updated ..
+14:35:11.565| Geting Records of Specific MICR
+14:35:13.555|Updating CheckStatus Id from BeneficiaryTransaction table
+14:35:16.771|Inserting history to BeneficiaryTransactionUser table
+14:35:16.772|Inserting history to BTHistory Table table
+14:35:16.773|Successfully records Updated ..
+14:35:20.008|Done !
+15:00:55.551|Started....
+15:01:03.341|User irfan is logged on.
+15:01:09.516|Reading CSV files.....to get the Check status Id 
+15:01:09.517|1 CSV files found
+15:01:09.518| Geting Records of Specific MICR
+15:01:13.043|Updating CheckStatus Id from BeneficiaryTransaction table
+15:01:21.522|Inserting history to BeneficiaryTransactionUser table
+15:01:21.527|Inserting history to BTHistory Table table
+15:01:21.530|Successfully records Updated ..
+15:01:21.531| Geting Records of Specific MICR
+15:01:26.983|Updating CheckStatus Id from BeneficiaryTransaction table
+15:01:27.155|Inserting history to BeneficiaryTransactionUser table
+15:01:27.156|Inserting history to BTHistory Table table
+15:01:27.157|Successfully records Updated ..
+15:08:15.408|Started....
+15:08:24.245|User irfan is logged on.
+15:08:30.820|Reading CSV files.....to get the Check status Id 
+15:08:30.821|1 CSV files found
+15:08:30.822| Geting Records of Specific MICR
+15:08:31.007|Updating CheckStatus Id from BeneficiaryTransaction table
+15:08:31.196|Inserting history to BeneficiaryTransactionUser table
+15:08:31.199|Inserting history to BTHistory Table table
+15:08:31.201|Successfully records Updated ..
+15:08:31.201| Geting Records of Specific MICR
+15:08:31.354|Updating CheckStatus Id from BeneficiaryTransaction table
+15:08:31.504|Inserting history to BeneficiaryTransactionUser table
+15:08:31.504|Inserting history to BTHistory Table table
+15:08:31.505|Successfully records Updated ..
+15:08:33.123|Done !
+16:28:20.270|Started....
+16:30:26.070|Started....
+16:30:36.875|User irfan  is logged on.
+16:34:38.764|Started....
+16:34:50.029|User irfan is logged on.
+16:44:01.544|Started....
+16:44:09.347|User irfan is logged on.
+17:07:13.344|Started....
+17:07:24.744|User irfan is logged on.
+17:10:50.782|Started....
+17:10:57.974|User irfan is logged on.
+17:19:34.403|Started....
+17:19:45.695|User irfan is logged on.
+17:24:01.092|Started....
+17:24:09.865|User irfan is logged on.
+17:57:07.989|Started....
+17:57:16.154|User irfan is logged on.
+18:00:01.307|Started....
+18:00:16.314|User irfan is logged on.
+18:04:51.835|Started....
+18:05:00.355|User irfan is logged on.
+18:13:58.621|Started....
+18:14:12.990|Invalid User Name or Password !
+18:14:21.596|User irfan is logged on.

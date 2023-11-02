@@ -1,0 +1,11 @@
+14:35:11.565|Record with h000111g200320160gh3907633618h Updated Successfully
+14:35:16.773|Record with h000081g500310104gh3907621456h Updated Successfully
+14:35:16.774|E:\testing\08010856CL (1).csv contains 2 MICRs Rocords
+14:35:20.008|E:\testing\08010856CL (1).csv Processed Successfully 
+15:01:21.531|Record with h000111g200320160gh3907633618h Updated Successfully
+15:01:27.157|Record with h000081g500310104gh3907621456h Updated Successfully
+15:01:27.158|E:\testing\08010856CL (1).csv contains 2 MICRs Rocords
+15:08:31.201|Record with h000111g200320160gh3907633618h Updated Successfully
+15:08:31.505|Record with h000081g500310104gh3907621456h Updated Successfully
+15:08:31.506|E:\testing\08010856CL (1).csv contains 2 MICRs Rocords
+15:08:33.123|E:\testing\08010856CL (1).csv Processed Successfully 

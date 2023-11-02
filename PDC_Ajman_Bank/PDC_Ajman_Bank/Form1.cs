@@ -29,7 +29,7 @@ namespace PDC_Ajman_Bank
             users.UserId = textBox1.Text;
             UserName = textBox1.Text;
             users.Password = textBox2.Text;
-             string result = dal.ValidateUser(users);
+            string result = dal.ValidateUser(users);
             if (result != null)
             {
                 Logger.WriteLog("User " + UserName + " is logged on.");
@@ -37,7 +37,7 @@ namespace PDC_Ajman_Bank
                 this.Hide();
                 myForm.ShowDialog();
                 this.Close();
-                Logger.WriteLog("User " + UserName + " is logged on.");
+                
             }
             else
             {
@@ -48,6 +48,9 @@ namespace PDC_Ajman_Bank
             }
         }
 
-        
+        private void Form1_Load(object sender, EventArgs e)
+        {
+
+        }
     }
 }

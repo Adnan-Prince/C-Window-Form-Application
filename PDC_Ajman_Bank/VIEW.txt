@@ -1,0 +1,4 @@
+select TA.BeneficiaryName,TA.BeneficiaryAccountNo,BT.CheckNo,BT.DueDate,BT.InstAmt,TblCity.CityName , TblBank.BankName,BT.DraweeName,BT.DraweeAccount,BT.UnitNo,BT.BuildingName,BT.Location from BeneficiaryTransaction BT 
+INNER JOIN TblBeneficiaryAccounts TA ON BT.BeneficiaryAccountNo = TA.BeneficiaryAccountNo
+INNER JOIN TblCity ON BT.CityId=TblCity.CityID
+INNER Join TblBank ON BT.BankId = TblBank.BankId

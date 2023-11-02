@@ -1,0 +1,17 @@
+E:\PMS\WHMS\WHMS.DAL\bin\Debug\net7.0\WHMS.DAL.deps.json
+E:\PMS\WHMS\WHMS.DAL\bin\Debug\net7.0\WHMS.DAL.runtimeconfig.json
+E:\PMS\WHMS\WHMS.DAL\bin\Debug\net7.0\WHMS.DAL.dll
+E:\PMS\WHMS\WHMS.DAL\bin\Debug\net7.0\WHMS.DAL.pdb
+E:\PMS\WHMS\WHMS.DAL\obj\Debug\net7.0\WHMS.DAL.csproj.AssemblyReference.cache
+E:\PMS\WHMS\WHMS.DAL\obj\Debug\net7.0\WHMS.DAL.GeneratedMSBuildEditorConfig.editorconfig
+E:\PMS\WHMS\WHMS.DAL\obj\Debug\net7.0\WHMS.DAL.AssemblyInfoInputs.cache
+E:\PMS\WHMS\WHMS.DAL\obj\Debug\net7.0\WHMS.DAL.AssemblyInfo.cs
+E:\PMS\WHMS\WHMS.DAL\obj\Debug\net7.0\WHMS.DAL.csproj.CoreCompileInputs.cache
+E:\PMS\WHMS\WHMS.DAL\obj\Debug\net7.0\WHMS.DAL.dll
+E:\PMS\WHMS\WHMS.DAL\obj\Debug\net7.0\refint\WHMS.DAL.dll
+E:\PMS\WHMS\WHMS.DAL\obj\Debug\net7.0\WHMS.DAL.pdb
+E:\PMS\WHMS\WHMS.DAL\obj\Debug\net7.0\WHMS.DAL.genruntimeconfig.cache
+E:\PMS\WHMS\WHMS.DAL\obj\Debug\net7.0\ref\WHMS.DAL.dll
+E:\PMS\WHMS\WHMS.DAL\bin\Debug\net7.0\Domain.dll
+E:\PMS\WHMS\WHMS.DAL\bin\Debug\net7.0\Domain.pdb
+E:\PMS\WHMS\WHMS.DAL\obj\Debug\net7.0\WHMS.DAL.csproj.CopyComplete

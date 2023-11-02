@@ -1,0 +1,978 @@
+﻿using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.Owin;
+using Microsoft.Owin.Security;
+using System;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Web.Mvc;
+using System.Web;
+using System.Data.Entity;
+using System.Collections.Generic;
+using Search_n_View.ViewModels;
+using Search_n_View.Models;
+using Microsoft.AspNet.Identity.EntityFramework;
+using System.Security.Cryptography;
+using Search_n_View.Helpers;
+using System.Configuration;
+using System.Web.Configuration;
+using System.IO;
+
+namespace Search_n_View.Controllers
+{
+
+    public class UserController : Controller
+    {
+        private ApplicationSignInManager _signInManager;
+        private ApplicationUserManager _userManager;
+        private ApplicationRoleManager _appRoleManager;
+
+        public UserController()
+        {
+        }
+
+        public UserController(ApplicationUserManager userManager, ApplicationSignInManager signInManager)
+        {
+            UserManager = userManager;
+            SignInManager = signInManager;
+        }
+
+        public ApplicationSignInManager SignInManager
+        {
+            get
+            {
+                return _signInManager ?? HttpContext.GetOwinContext().Get<ApplicationSignInManager>();
+            }
+            private set
+            {
+                _signInManager = value;
+            }
+        }
+
+        public ApplicationUserManager UserManager
+        {
+            get
+            {
+                return _userManager ?? HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
+            }
+            private set
+            {
+                _userManager = value;
+            }
+        }
+
+        protected ApplicationRoleManager AppRoleManager
+        {
+            get
+            {
+                return _appRoleManager ?? Request.GetOwinContext().GetUserManager<ApplicationRoleManager>();
+            }
+            private set
+            {
+                _appRoleManager = value;
+            }
+        }
+
+        private ApplicationDbContext db = new ApplicationDbContext();
+
+        [AllowAnonymous]
+
+        public ActionResult Login(string returnUrl)
+        {
+            try
+            {
+                ViewBag.ReturnUrl = returnUrl;
+                return View();
+
+            }
+            catch (Exception ex)
+            {
+
+                Logs.ErrorLog("UserController", "Login", ex.Message, ex.Source, ex.StackTrace);
+                return View();
+            }
+        }
+
+
+
+        [HttpPost]
+        [AllowAnonymous]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> Login(LoginViewModel model, string returnUrl)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    return View(model);
+                }
+
+
+                // This doesn't count login failures towards account lockout
+                // To enable password failures to trigger account lockout, change to shouldLockout: true
+                var result = await SignInManager.PasswordSignInAsync(model.Username, model.Password, model.RememberMe, shouldLockout: false);
+                switch (result)
+                {
+                    case SignInStatus.Success:
+                        {
+                            var user = UserManager.FindByName(model.Username);
+                            if (user != null)
+                            {
+                                Session["UserName"] = user.FirstName;
+                            }
+                            if (string.IsNullOrEmpty(returnUrl) || returnUrl == "/")
+                            {
+                                var rUser = new System.Security.Claims.ClaimsPrincipal(AuthenticationManager.AuthenticationResponseGrant.Identity);
+                                var SessionUserId = User.Identity.GetUserId();
+
+                                string CurrentUserName = User.Identity.Name;
+                                string TempPath = Convert.ToString(WebConfigurationManager.AppSettings["FileUploadTempPath"]);
+                                if (!string.IsNullOrEmpty(TempPath))
+                                {
+                                    foreach (string newPath in Directory.GetFiles(TempPath, CurrentUserName + "*"))
+                                        System.IO.File.Delete(newPath);
+                                }
+
+                                if (rUser.IsInRole("Admin") || rUser.IsInRole("PowerAdmin"))
+                                {
+                                    return RedirectToAction("Index", "User");
+                                }
+                                else if (rUser.IsInRole("DataEntryUser"))
+                                {
+                                    return RedirectToAction("DocCreation", "Document");
+                                }
+                                else {
+                                    return RedirectToAction("DocumentSearch", "Document");
+                                }
+
+                            }
+                            return RedirectToLocal(returnUrl);
+                        }
+                    case SignInStatus.LockedOut:
+                        return View("Lockout");
+                    case SignInStatus.RequiresVerification:
+                        return RedirectToAction("SendCode", new { ReturnUrl = returnUrl, RememberMe = model.RememberMe });
+                    case SignInStatus.Failure:
+                    default:
+                        ModelState.AddModelError("", "Invalid login attempt.");
+                        return View(model);
+                }
+            }
+            catch (Exception ex)
+            {
+                Logs.ErrorLog("UserController", "Login", ex.Message, ex.Source, ex.StackTrace);
+                return RedirectToAction("Error", "Home");
+            }
+        }
+
+
+        [Authorize(Roles = "Admin, PowerAdmin")]
+        public ActionResult Index()
+        {
+            try
+            {
+
+                var data = db.Users.Include(x=>x.AccessGroup).OrderByDescending(x => x.Id).ToList();
+
+                var users = new List<UserViewModel>();
+
+                for (int i = 0; i < data.Count(); i++)
+                {
+                    var usr = new UserViewModel();
+                    usr.Id = data[i].Id;
+                    usr.UserName = data[i].UserName;
+                    usr.Email = data[i].Email;
+                    usr.AccessGroupName = data[i].AccessGroup.Name;
+                    usr.AddedBy = data[i].CreatedBy;
+                    usr.AddedTime = data[i].CreatedDate;
+                    usr.Role = UserManager.GetRoles(data[i].Id).FirstOrDefault();
+
+                    users.Add(usr);
+                }
+
+                var model = new ManageUserViewModel();
+                model.Users = users;
+
+                return View(model);
+
+            }
+            catch (Exception ex)
+            {
+                Logs.ErrorLog("UserController", "Index", ex.Message, ex.Source, ex.StackTrace);
+                return View(new ManageUserViewModel());
+            }
+        }
+
+        [Authorize(Roles = "Admin, PowerAdmin")]
+        public ActionResult CreateUser()
+        {
+            try
+            {
+                var roles = this.AppRoleManager.Roles;
+                var depts = db.MainDepartment.Where(x=>x.IsDeleted == false).ToList();
+                var AcGp = db.AccessGroup.ToList();
+                var ITypes = db.ItemType.Where(x => x.IsDeleted == false).ToList();
+                var model = new RegisterViewModel();
+                model.RolesList = roles.Select(s => new SelectListItem { Value = s.Id, Text = s.Name }).ToList();
+                model.Departments = depts.Select(s => new SelectListItem { Value = Convert.ToString(s.Id), Text = s.Name }).ToList(); ;
+                model.AccessGroup = AcGp.Select(s => new SelectListItem { Value = Convert.ToString(s.Id), Text = s.Name }).ToList();
+                model.ItemTypes = ITypes.Select(s => new SelectListItem { Value = Convert.ToString(s.Id), Text = s.Name }).ToList();
+                return View(model);
+
+            }
+            catch (Exception ex)
+            {
+                Logs.ErrorLog("UserController", "CreateUser", ex.Message, ex.Source, ex.StackTrace);
+                return View(new RegisterViewModel());
+            }
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "Admin, PowerAdmin")]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> CreateUser(RegisterViewModel model)
+        {
+            try
+            {
+                var roles = this.AppRoleManager.Roles;
+
+                var depts = db.MainDepartment.Where(x => x.IsDeleted == false).ToList();
+                var AcGp = db.AccessGroup.ToList();
+                var ITypes = db.ItemType.Where(x => x.IsDeleted == false).ToList();
+                var Users = db.Users.ToList();
+                model.RolesList = roles.Select(s => new SelectListItem { Value = s.Id, Text = s.Name }).ToList();
+                model.AccessGroup = AcGp.Select(s => new SelectListItem { Value = Convert.ToString(s.Id), Text = s.Name }).ToList();
+                model.Departments = depts.Select(s => new SelectListItem { Value = Convert.ToString(s.Id), Text = s.Name }).ToList();
+                model.ItemTypes = ITypes.Select(s => new SelectListItem { Value = Convert.ToString(s.Id), Text = s.Name }).ToList();
+       
+                string CurrentUserName = User.Identity.Name;
+                if (ModelState.IsValid)
+                {
+                    var user = new Models.ApplicationUser
+                    {
+                        FirstName = model.FirstName,
+                        LastName = model.LastName,
+                        UserName = model.UserName,
+                        Email = model.Email,
+                        EmailConfirmed = true,
+                        CreatedDate = DateTime.Now,
+                        ModifiedDate = DateTime.Now,
+                        CreatedBy = CurrentUserName,
+                        ModifiedBy = CurrentUserName,
+                        AcId = model.AcId,
+                        IsMaker = false,
+                        IsChecker = false
+                    };
+
+
+                    var result = await UserManager.CreateAsync(user, model.Password);
+
+
+                    if (result.Succeeded)
+                    {
+                        UserItemType UserItemType = new UserItemType();
+                        int deptid = 0;
+                        if (model.ItId.Count() == 1)
+                        {
+                            int It = model.ItId[0];
+                            var IT = db.ItemType.Where(x => x.Id == It).FirstOrDefault();
+                            if (IT.Name == "All")
+                            {
+                                for (int a = 0; a < model.MdId.Count(); a++)
+                                {
+                                    deptid = model.MdId[a];
+                                    if (a == 0)
+                                        ITypes = ITypes.Where(x => x.MdId == deptid).ToList();
+                                    else
+                                        ITypes.AddRange(ITypes.Where(x => x.MdId == deptid).ToList());
+								}
+								 for (int i = 0; i < ITypes.Count(); i++)
+                                {
+                                    if (ITypes[i].Name != "All")
+                                    {
+                                        UserItemType.UID = user.Id;
+                                        UserItemType.ItID = ITypes[i].Id;
+                                        db.UserItemType.Add(UserItemType);
+                                        db.SaveChanges();
+                                    }
+
+                                }
+                                
+                            }
+                            else
+                            {
+                                for (int i = 0; i < model.ItId.Count(); i++)
+                                {
+                                    UserItemType.UID = user.Id;
+                                    UserItemType.ItID = model.ItId[i];
+                                    db.UserItemType.Add(UserItemType);
+                                    db.SaveChanges();
+
+                                }
+                            }
+                        }
+                        else
+                        {
+                            for (int i = 0; i < model.ItId.Count(); i++)
+                            {
+                                
+                                    UserItemType.UID = user.Id;
+                                    UserItemType.ItID = model.ItId[i];
+                                    db.UserItemType.Add(UserItemType);
+                                    db.SaveChanges();
+                                
+
+                            }
+                        }
+                        UserDepartment usrDpt = new UserDepartment();
+                        for (int i = 0; i < model.MdId.Count(); i++)
+                        {
+
+                            usrDpt.UID = user.Id;
+                            usrDpt.MdID = model.MdId[i];
+                            db.UserDepartment.Add(usrDpt);
+                            db.SaveChanges();
+                        }
+
+                        var newRoleName = roles.SingleOrDefault(r => r.Id == model.RoleId).Name;
+                        var result1 = await UserManager.AddToRolesAsync(user.Id, new string[] { newRoleName });
+
+                        db.SaveChanges();
+
+                        if (result1.Succeeded)
+                        {
+                            return RedirectToAction("Index", "User");
+                        }
+
+                    }
+                    AddErrors(result);
+
+                    // If we got this far, something failed, redisplay form
+
+                }
+                return View(model);
+
+            }
+            catch (Exception ex)
+            {
+                Logs.ErrorLog("UserController", "CreateUser", ex.Message, ex.Source, ex.StackTrace);
+                return View(new RegisterViewModel());
+            }
+        }
+
+        [Authorize(Roles = "Admin, PowerAdmin")]
+        public ActionResult EditUser(ForgotPasswordViewModel viewmodel)
+        {
+            try
+            {
+                var model = new EditUserViewModel();
+                List<int> ItIds = new List<int>();
+                List<int> MdIds = new List<int>();
+                var roles = this.AppRoleManager.Roles;
+                var depts = db.MainDepartment.Where(x=>x.IsDeleted == false).ToList();
+                var AcGp = db.AccessGroup.ToList();
+                var ITypes = db.ItemType.Where(x=>x.Name != "All" && x.IsDeleted == false).ToList();
+                if (ModelState.IsValid)
+                {
+                    var U = UserManager.FindByName(viewmodel.Username);
+
+                    var user = (from us in db.Users
+                                join ac in db.AccessGroup
+                                on us.AcId equals ac.Id
+                                join ud in db.UserDepartment
+                                on us.Id equals ud.UID
+                                join md in db.MainDepartment
+                                on ud.MdID equals md.Id
+                                join uit in db.UserItemType
+                                on us.Id equals uit.UID
+                                join It in db.ItemType
+                                on uit.ItID equals It.Id
+                                where us.Id == U.Id
+                                select new UserDocument()
+                                {
+                                    UserId = us.Id,
+                                    UserName = us.UserName,
+                                    AddedBy = us.CreatedBy,
+                                    ModifiedBy = us.ModifiedBy,
+                                    AddedTime = us.CreatedDate,
+                                    UserEmail = us.Email,
+                                    FirstName = us.FirstName,
+                                    LastName = us.LastName,
+                                    DepartmentId = md.Id,
+                                    Department = md.Name,
+                                    ItemTypeId = It.Id,
+                                    ItemType = It.Name,
+                                    AcId = ac.Id
+                                }).OrderByDescending(x => x.UserId).ToList();
+
+
+                    int prevItId = 0;
+                    int PrevMdId = 0;
+                    if (user != null)
+                    {
+                        for (int i = 0; i < user.Count(); i++)
+                        {
+                            if (prevItId != user[i].ItemTypeId)
+                            {
+                                ItIds.Add(user[i].ItemTypeId);
+                                prevItId = user[i].ItemTypeId;
+                            }
+                        }
+
+                        for (int i = 0; i < user.Count(); i++)
+                        {
+                            if (PrevMdId != user[i].DepartmentId)
+                            {
+                                MdIds.Add(user[i].DepartmentId);
+                                PrevMdId = user[i].DepartmentId;
+                            }
+                        }
+
+
+                        if (user.Count() > 0)
+                        {
+                            model.UserId = user[0].UserId;
+                            model.Email = user[0].UserEmail;
+                            model.FirstName = user[0].FirstName;
+                            model.LastName = user[0].LastName;
+                            model.RoleId = U.Roles.SingleOrDefault().RoleId;
+                            model.AcId = user[0].AcId;
+                            ViewBag.RoleId = new SelectList(roles, "Id", "Name", model.RoleId);
+                            ViewBag.MdId = new SelectList(depts, "Id", "Name", MdIds);
+                            ViewBag.AcId = new SelectList(AcGp, "Id", "Name", model.AcId);
+                            ViewBag.ItId = new SelectList(ITypes, "Id", "Name", ItIds);
+                            model.ItId = ItIds.ToArray();
+                            model.MdId = MdIds.ToArray();
+                            model.UserName = user[0].UserName;
+                            model.CreatedBy = user[0].AddedBy;
+                            model.ModifiedBy = user[0].ModifiedBy;
+                        }
+
+
+                        string ItemIds = "";
+
+                        for (int k = 0; k < ItIds.Count(); k++)
+                        {
+                            ItemIds += Convert.ToString(ItIds[k]) + ",";
+                        }
+
+
+                        ItemIds = ItemIds.Substring(0, ItemIds.Length - 1);
+                        ViewBag.UserItemTypesId = ItemIds;
+
+                    }
+                }
+             
+
+                ViewBag.RoleId = new SelectList(roles, "Id", "Name", model.RoleId);
+                ViewBag.MdId = new SelectList(depts, "Id", "Name", model.MdId);
+                ViewBag.ItId = new SelectList(ITypes, "Id", "Name", model.ItId);
+                ViewBag.AcId = new SelectList(AcGp, "Id", "Name", model.AcId);
+
+                return View(model);
+            }
+            catch (Exception ex)
+            {
+                Logs.ErrorLog("UserController", "EditUser", ex.Message, ex.Source, ex.StackTrace);
+                return View(new RegisterViewModel());
+            }
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "Admin, PowerAdmin")]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> EditUser(EditUserViewModel model)
+        {
+            try
+            {
+                var roles = this.AppRoleManager.Roles;
+                var depts = db.MainDepartment.Where(x=>x.IsDeleted == false).ToList();
+                var AcGp = db.AccessGroup.ToList();
+                var ITypes = db.ItemType.Where(x => x.IsDeleted == false).ToList();
+                string CurrentUserName = User.Identity.Name;
+                var Users = db.Users.ToList();
+                if (ModelState.IsValid)
+                {
+
+                    var user = UserManager.FindById(model.UserId);
+
+                    if (user != null)
+                    {
+                        user.FirstName = model.FirstName;
+                        user.LastName = model.LastName;
+                        user.UserName = model.UserName;
+                        user.Email = model.Email;
+                        user.EmailConfirmed = true;
+                        user.ModifiedDate = DateTime.Now;
+                        user.ModifiedBy = CurrentUserName;
+                        user.AcId = model.AcId;
+                    }
+
+                    var result = await UserManager.UpdateAsync(user);
+
+                    if (result.Succeeded)
+                    {
+
+                        var UserDepartment = new UserDepartment();
+
+                        var objud = db.UserDepartment.Where(x => x.UID == model.UserId).ToList();
+                        for (int a = 0; a < objud.Count(); a++)
+                        {
+                            db.UserDepartment.Remove(objud[a]);
+                            db.SaveChanges();
+                        }
+
+                        var UserItemTypes = new UserItemType();
+
+                        var objui = db.UserItemType.Where(x => x.UID == model.UserId).ToList();
+                        for (int a = 0; a < objui.Count(); a++)
+                        {
+                            db.UserItemType.Remove(objui[a]);
+                            db.SaveChanges();
+                        }
+
+
+                        for (int i = 0; i < model.MdId.Count(); i++)
+                        {
+
+                            UserDepartment.UID = user.Id;
+                            UserDepartment.MdID = model.MdId[i];
+                            db.UserDepartment.Add(UserDepartment);
+                            db.SaveChanges();
+                            
+                        }
+
+                        int deptid = 0;
+                        if (model.ItId.Count() == 1)
+                        {
+                            int It = model.ItId[0];
+                            var IT = db.ItemType.Where(x => x.Id == It).FirstOrDefault();
+                            if (IT.Name == "All")
+                            {
+                                for (int a = 0; a< model.MdId.Count(); a++) {
+                                    deptid = model.MdId[a];
+                                    if (a == 0)
+                                        ITypes = ITypes.Where(x => x.MdId == deptid).ToList();
+                                    else
+                                        ITypes.AddRange(ITypes.Where(x => x.MdId == deptid).ToList());
+                                }
+                                  
+                                for (int i = 0; i < ITypes.Count(); i++)
+                                {
+                                    if (ITypes[i].Name != "All")
+                                    {
+                                        UserItemTypes.UID = user.Id;
+                                        UserItemTypes.ItID = ITypes[i].Id;
+                                        db.UserItemType.Add(UserItemTypes);
+                                        db.SaveChanges();
+                                    }
+
+                                }
+                            }
+                            else
+                            {
+                                for (int i = 0; i < model.ItId.Count(); i++)
+                                {
+                                    UserItemTypes.UID = user.Id;
+                                    UserItemTypes.ItID = model.ItId[i];
+                                    db.UserItemType.Add(UserItemTypes);
+                                    db.SaveChanges();
+
+                                }
+                            }
+                        }
+                        else
+                        {
+                            for (int i = 0; i < model.ItId.Count(); i++)
+                            {
+                                UserItemTypes.UID = user.Id;
+                                UserItemTypes.ItID = model.ItId[i];
+                                db.UserItemType.Add(UserItemTypes);
+                                db.SaveChanges();
+
+                            }
+                        }
+                        
+                        var oldRoleId = user.Roles.SingleOrDefault().RoleId;
+                        var oldRoleName = roles.SingleOrDefault(r => r.Id == oldRoleId).Name;
+                        var newRoleName = roles.SingleOrDefault(r => r.Id == model.RoleId).Name;
+                        if (oldRoleId != model.RoleId)
+                        {
+                            UserManager.RemoveFromRole(user.Id, oldRoleName);
+                            var result1 = await UserManager.AddToRolesAsync(user.Id, new string[] { newRoleName });
+
+                        }
+
+                        db.SaveChanges();
+
+                        return RedirectToAction("Index", "User");
+                    }
+
+
+                }
+
+                ViewBag.RoleId = new SelectList(roles, "Id", "Name", model.RoleId);
+                ViewBag.MdId = new SelectList(depts, "Id", "Name", model.MdId);
+                ViewBag.ItId = new SelectList(ITypes, "Id", "Name", model.ItId);
+                ViewBag.AcId = new SelectList(AcGp, "Id", "Name", model.AcId);
+
+                // If we got this far, something failed, redisplay form
+                return View(model);
+
+            }
+            catch (Exception ex)
+            {
+                Logs.ErrorLog("UserController", "EditUser", ex.Message, ex.Source, ex.StackTrace);
+                return View(new EditUserViewModel());
+            }
+        }
+
+        [HttpPost]
+        public ActionResult GetUserItemTypes(string UserId)
+        {
+            try
+            {
+               
+                    var ItemTypes = (from uit in db.UserItemType
+                                     join It in db.ItemType
+                                     on uit.ItID equals It.Id
+                                     where uit.UID == UserId
+                                     select new UserDocument()
+                                     {
+                                         Id = It.Id,
+                                         Name = It.Name
+                                     }).ToList();
+                    return Json(ItemTypes);
+              
+
+            }
+            catch (Exception ex)
+            {
+                Logs.ErrorLog("UserController", "GetUserItemTypes", ex.Message, ex.Source, ex.StackTrace);
+                return Json(null);
+            }
+        }
+
+        [HttpPost]
+        public ActionResult GetUserDepartments(string UserId)
+        {
+            try
+            {
+
+                var ItemTypes = (from ud in db.UserDepartment
+                                 join md in db.MainDepartment
+                                 on ud.MdID equals md.Id
+                                 where ud.UID == UserId
+                                 select new UserDocument()
+                                 {
+                                     Id = md.Id,
+                                     Name = md.Name
+                                 }).ToList();
+                return Json(ItemTypes);
+
+
+            }
+            catch (Exception ex)
+            {
+                Logs.ErrorLog("UserController", "GetUserDepartments", ex.Message, ex.Source, ex.StackTrace);
+                return Json(null);
+            }
+        }
+
+
+        [HttpPost]
+        public ActionResult GetItemTypes(int DepartmentId)
+        {
+            try
+            {
+                var ItemTypes = db.ItemType.Where(x => x.MdId == DepartmentId && x.IsDeleted == false).ToList();
+                return Json(ItemTypes);
+
+            }
+            catch (Exception ex)
+            {
+                Helpers.Logs.ErrorLog("UserController", "GetUserItemTypes", ex.Message, ex.Source, ex.StackTrace);
+                return Json(null);
+            }
+        }
+
+        [Authorize]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> ChangePassword(ChangePasswordViewModel model)
+        {
+            try
+            {
+                ViewBag.StatusMessage = "dp-none";
+                if (!ModelState.IsValid)
+                {
+                    return View(model);
+                }
+                var result = await UserManager.ChangePasswordAsync(User.Identity.GetUserId(), model.OldPassword, model.NewPassword);
+                if (result.Succeeded)
+                {
+                    var user = await UserManager.FindByIdAsync(User.Identity.GetUserId());
+                    if (user != null)
+                    {
+                        await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
+                    }
+                    ViewBag.StatusMessage = "Your password has been changed.";
+                    return View(new ChangePasswordViewModel());
+                    //return RedirectToAction("Index", new { Message = ManageMessageId.ChangePasswordSuccess });
+                }
+                AddErrors(result);
+                return View(model);
+
+            }
+            catch (Exception ex)
+            {
+                Logs.ErrorLog("UserController", "ChangePassword", ex.Message, ex.Source, ex.StackTrace);
+                return View(new ChangePasswordViewModel());
+            }
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult LogOff()
+        {
+            try
+            {
+                AuthenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
+                Session["UserName"] = string.Empty;
+                string CurrentUserName = User.Identity.Name;
+                try
+                {
+                    string TempPath = Convert.ToString(WebConfigurationManager.AppSettings["FileUploadTempPath"]);
+                    if (!string.IsNullOrEmpty(TempPath))
+                    {
+                        foreach (string newPath in Directory.GetFiles(TempPath, CurrentUserName + "*"))
+                            System.IO.File.Delete(newPath);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Logs.ErrorLog("UserController", "LogOff->DeletingTempUserFiles", ex.Message, ex.Source, ex.StackTrace);
+                    return RedirectToAction("Login", "User");
+                }
+
+                return RedirectToAction("Login", "User");
+            }
+            catch (Exception ex)
+            {
+                Logs.ErrorLog("UserController", "LogOff", ex.Message, ex.Source, ex.StackTrace);
+                return RedirectToAction("Login", "User");
+            }
+        }
+
+
+        [AllowAnonymous]
+        public ActionResult ResetPassword()
+        {
+            try
+            {
+                var SessionUserId = User.Identity.GetUserId();
+                ViewBag.UserId = SessionUserId;
+
+                return View();
+            }
+            catch (Exception ex)
+            {
+                Logs.ErrorLog("UserController", "ResetPassword", ex.Message, ex.Source, ex.StackTrace);
+                return View();
+            }
+        }
+
+
+        [HttpPost]
+        public async Task<JsonResult> ResetPassword(ResetPasswordViewModel model)
+        {
+            try
+            {
+                string CurrentUserName = User.Identity.Name;
+
+                var user = await UserManager.FindAsync(CurrentUserName, model.CurrentPassword);
+
+                //var user = UserManager.FindByIdAsync(model.Id).Result;
+                if (user == null)
+                    return Json("Current Password Not Matched!");
+
+                var token = UserManager.GeneratePasswordResetTokenAsync(user.Id).Result;
+
+                var result = await UserManager.ResetPasswordAsync(user.Id, token, model.NewPassword);
+                if (result.Succeeded)
+                {
+                    return Json(true);
+                }
+                else
+                    return Json(false);
+
+            }
+            catch (Exception ex)
+            {
+                Logs.ErrorLog("UserController", "ResetPassword", ex.Message, ex.Source, ex.StackTrace);
+                return Json(false);
+            }
+        }
+
+        [AllowAnonymous]
+        public ActionResult ResetPasswordConfirmation()
+        {
+            try
+            {
+                return View();
+            }
+            catch (Exception ex)
+            {
+                Logs.ErrorLog("UserController", "ResetPasswordConfirmation", ex.Message, ex.Source, ex.StackTrace);
+                return View();
+            }
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            try
+            {
+                if (disposing && _userManager != null)
+                {
+                    _userManager.Dispose();
+                    _userManager = null;
+                }
+
+                base.Dispose(disposing);
+            }
+            catch (Exception ex)
+            {
+
+                throw;
+            }
+        }
+
+        #region Helpers
+        // Used for XSRF protection when adding external logins
+        private const string XsrfKey = "XsrfId";
+
+        private IAuthenticationManager AuthenticationManager
+        {
+            get
+            {
+                return HttpContext.GetOwinContext().Authentication;
+            }
+        }
+
+        private void AddErrors(IdentityResult result)
+        {
+            try
+            {
+                foreach (var error in result.Errors)
+                {
+                    ModelState.AddModelError("", error);
+                }
+
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+
+        private bool HasPassword()
+        {
+            try
+            {
+
+                var user = UserManager.FindById(User.Identity.GetUserId());
+                if (user != null)
+                {
+                    return user.PasswordHash != null;
+                }
+                return false;
+            }
+            catch (Exception ex)
+            {
+
+                throw;
+            }
+        }
+
+        private bool HasPhoneNumber()
+        {
+            try
+            {
+                var user = UserManager.FindById(User.Identity.GetUserId());
+                if (user != null)
+                {
+                    return user.PhoneNumber != null;
+                }
+                return false;
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+
+        public enum ManageMessageId
+        {
+            AddPhoneSuccess,
+            ChangePasswordSuccess,
+            SetTwoFactorSuccess,
+            SetPasswordSuccess,
+            RemoveLoginSuccess,
+            RemovePhoneSuccess,
+            Error
+        }
+
+        private ActionResult RedirectToLocal(string returnUrl)
+        {
+            try
+            {
+                if (Url.IsLocalUrl(returnUrl))
+                {
+                    return Redirect(returnUrl);
+                }
+                return RedirectToAction("Login", "User");
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+
+        internal class ChallengeResult : HttpUnauthorizedResult
+        {
+            public ChallengeResult(string Provider, string redirectUri)
+                : this(Provider, redirectUri, null)
+            {
+            }
+
+            public ChallengeResult(string Provider, string redirectUri, string userId)
+            {
+                LoginProvider = Provider;
+                RedirectUri = redirectUri;
+                UserId = userId;
+            }
+
+            public string LoginProvider { get; set; }
+            public string RedirectUri { get; set; }
+            public string UserId { get; set; }
+
+            public override void ExecuteResult(ControllerContext context)
+            {
+                try
+                {
+                    var properties = new AuthenticationProperties { RedirectUri = RedirectUri };
+                    if (UserId != null)
+                    {
+                        properties.Dictionary[XsrfKey] = UserId;
+                    }
+                    context.HttpContext.GetOwinContext().Authentication.Challenge(properties, LoginProvider);
+                }
+                catch (Exception ex)
+                {
+                    throw;
+                }
+            }
+        }
+        #endregion
+    }
+
+}

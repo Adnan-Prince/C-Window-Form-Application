@@ -1,0 +1,169 @@
+﻿@model Search_n_View.ViewModels.EditUserViewModel
+@{
+    ViewBag.Title = "Edit User";
+    var UserItemTypesId = ViewBag.UserItemTypesId;
+}
+
+
+@section styles {
+    <link href="~/Content/bootstrap-select.css" rel="stylesheet" />
+    <style>
+        input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        input[type=number] {
+            -moz-appearance: textfield;
+        }
+
+        .select2-search__field, .select2-search__field2 {
+            height: 32px !important;
+            margin-top: -3px !important;
+            font-size: 12px !important;
+        }
+
+        .btn-light {
+            background-color: white !important;
+            color: dimgray !important;
+        }
+    </style>
+
+}
+
+
+<input type="hidden" id="UserItemTypesId" value="@UserItemTypesId">
+
+
+<div>
+    <div class="animated fadeIn">
+        <div class="row">
+            <div class="col-sm-3"></div>
+            <div class="col-sm-6">
+                @using (Html.BeginForm("EditUser", "User", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+                {
+                    <div class="card">
+                        <div class="card-header">
+                            <h5>@ViewBag.Title</h5>
+                        </div>
+                        <div class="card-body">
+                            @Html.AntiForgeryToken()
+                            @Html.ValidationSummary("", new { @class = "text-danger" })
+                            <div class="form-group row">
+                                @Html.LabelFor(m => m.FirstName, new { @class = "col-md-3 col-form-label font-weight-bold" })
+                                <span style="color: #f86c6b;font-weight:bold;font-size:20px;">*</span>
+                                <div class="col-md-8">
+                                    @Html.HiddenFor(m => m.UserId, new { @class = "form-control" })
+                                    @Html.TextBoxFor(m => m.FirstName, new { @class = "form-control", tabindex = 1 })
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                @Html.LabelFor(m => m.LastName, new { @class = "col-md-3 col-form-label font-weight-bold" })
+                                <span style="color: #f86c6b;font-weight:bold;font-size:20px;">*</span>
+                                <div class="col-md-8">
+                                    @Html.TextBoxFor(m => m.LastName, new { @class = "form-control", tabindex = 2 })
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                @Html.LabelFor(m => m.UserName, new { @class = "col-md-3 col-form-label font-weight-bold" })
+                                <span style="color: #f86c6b;font-weight:bold;font-size:20px;">*</span>
+                                <div class="col-md-8">
+                                    @Html.TextBoxFor(m => m.UserName, new { @class = "form-control", tabindex = 3 })
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                @Html.LabelFor(m => m.Email, new { @class = "col-md-3 col-form-label font-weight-bold" })
+                                <span style="color: #f86c6b;font-weight:bold;font-size:20px;">*</span>
+                                <div class="col-md-8">
+                                    @Html.TextBoxFor(m => m.Email, new { @class = "form-control", tabindex = 4 })
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                @Html.LabelFor(m => m.RoleId, new { @class = "col-md-3 col-form-label font-weight-bold" })
+                                <span style="color: #f86c6b;font-weight:bold;font-size:20px;">*</span>
+                                <div class="col-md-8">
+                                    @Html.DropDownList("RoleId", null, "Select Role", htmlAttributes: new { @class = "form-control", tabindex = 7 })
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                @Html.LabelFor(m => m.AcId, new { @class = "col-md-3 col-form-label font-weight-bold" })
+                                <span style="color: #f86c6b;font-weight:bold;font-size:20px;">*</span>
+                                <div class="col-md-8">
+                                    @Html.DropDownList("AcId", null, "Access Rights", htmlAttributes: new { @class = "form-control", tabindex = 8 })
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                @Html.LabelFor(m => m.MdId, new { @class = "col-md-3 col-form-label font-weight-bold" })
+                                <span style="color: #f86c6b;font-weight:bold;font-size:20px;">*</span>
+                                <div class="col-md-8">
+                                    @Html.DropDownList("MdId", null, htmlAttributes: new { @class = "form-control selectpicker DepartmentList select2-search__field2", @title = "Select Department", @multiple = "multiple", data_live_search = "true" , tabindex = 9 })
+                                </div>
+                            </div>
+                            <div class="form-group row ">
+                                @Html.LabelFor(m => m.ItId, new { @class = "col-md-3 col-form-label font-weight-bold" })
+                                <span style="color: #f86c6b;font-weight:bold;font-size:20px;">*</span>
+                                <div class="col-md-8 ItemTypeListBox">
+
+                                    @Html.DropDownList("ItId", null, htmlAttributes: new { @class = "form-control selectpicker ItemTypeList select2-search__field2", @title = "Select Branch", @multiple = "multiple", data_live_search = "true" ,@tabindex = 10 })
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="card-footer">
+                            <button class="btn btn-md btn-primary mr-3" type="submit" , tabindex="11">
+                                <i class="fa fa-dot-circle-o"></i> Save
+                            </button>
+                            <a class="btn btn-md btn-primary ml-3" href="@Url.Action("Index", "User")" , tabindex="12">
+                                <i class="fa fa-close"></i> Cancel
+                            </a>
+                        </div>
+                    </div>
+                }
+
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/Scripts/bootstrap-select.min.js"></script>
+    <script>
+        $(document).ready(function () {
+           
+    
+            var ItemIds = $("#UserItemTypesId").val();
+            var items = [];
+            ItemIds = ItemIds.split(',');
+            for (var i = 0; i < ItemIds.length; i++) {
+                items.push(parseInt(ItemIds[i]))
+            }
+            $('.ItemTypeList').selectpicker();
+            $('.ItemTypeList').selectpicker('val', items);
+
+             $(".DepartmentList").change(function () {
+                 if ($(".DepartmentList option:selected").val() > 0) {
+                       $(".ItemTypeListBox").html("");
+                    $.ajax({
+                        type: 'POST',
+                        url: '@Url.Action("GetItemTypes","User")',
+                        data: { DepartmentId: parseInt($(".DepartmentList option:selected").val()) },
+                        success: function (data) {
+                               var html = "<select class='form-control selectpicker ItemTypeList select2-search__field2' title='Select ItemType' data_live_search = 'true' multiple name='ItId'>";
+                            for (var i = 0; i < data.length; i++) {
+                                
+                                    html += "<option value="+parseInt(data[i].Id)+">"+data[i].Name+"</option>";
+                            }
+                            html += "</select>";
+                            $(".ItemTypeListBox").append(html);
+                            $('.ItemTypeList').selectpicker();
+                        }
+                    });
+                }
+                
+            })
+
+        })
+    </script>
+}

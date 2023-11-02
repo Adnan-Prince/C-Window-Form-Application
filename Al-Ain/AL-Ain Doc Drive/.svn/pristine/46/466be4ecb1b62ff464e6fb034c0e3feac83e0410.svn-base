@@ -1,0 +1,59 @@
+﻿
+@using Search_n_View.Models;
+@{
+    int counter = 1;
+    List<AlAinDocument> DocList = ViewData["DocList"] as List<AlAinDocument>;
+}
+<div class="table-responsive ">
+    <table class="table table-striped  datatable">
+        <thead>
+            <tr>
+                <th class="text-center">Invoice Number</th>
+                <th class="text-center">Invoice Date</th>
+                @*<th class="text-center">Year</th>*@
+                <th class="text-center">Pharmacy</th>
+                <th class="text-center">Branch</th>
+                <th class="text-center">Added By</th>
+                @*<th class="text-center">AddedBy</th>
+        <th class="text-center">AddedTime</th>*@
+                <th class="text-center no-sort">Action</th>
+            </tr>
+        </thead>
+        <tbody class="AllDocFilterData">
+            @if (DocList != null)
+            {
+
+                for (int i = 0; i < DocList.Count; i++)
+                {
+            <tr>
+
+                <td class="text-center">@DocList[i].InvoiceNo</td>
+                @*<td class="text-center">@DocList[i].PolicyNo</td>*@
+                @if (DocList[i].InvoiceDate != null)
+                {
+                    <td class="text-center">@DocList[i].InvoiceDate</td>
+                }
+                else
+                {
+                    <td class="text-center">N/A</td>
+                }
+                <td class="text-center">@DocList[i].ItemType.Name</td>
+                <td class="text-center">@DocList[i].DocumentType.Name</td>
+                <td class="text-center">@DocList[i].AddedBy</td>
+                @*<td class="text-center">@DocList[i].AddedBy</td>
+        <td class="text-center">@DocList[i].AddedTime.ToString("dd/MM/yyyy hh:mm:ss")</td>*@
+
+
+                <td class="text-center">
+
+                    <a class="btn btn-primary DocDetailView" href="@Url.Action("SelectedDocumentDetail", "Document", new { DId = DocList[i].Id })" data-docpath="@DocList[i].DocPath" alt="Docuemnt Detail" title="Document Detail" target="_blank">View</a>
+
+                </td>
+
+            </tr>
+                    counter++;
+                }
+            }
+        </tbody>
+    </table>
+</div>

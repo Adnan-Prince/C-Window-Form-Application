@@ -1,0 +1,646 @@
+﻿@using Search_n_View.ViewModels;
+@{
+    ViewBag.Title = "Document Upload";
+    var DpList = ViewBag.DepartmentList;
+    var ChannelList = ViewBag.ChannelList;
+    var DescriptionList = ViewBag.DescriptionList;
+    var Access = ViewBag.Access;
+}
+
+
+@section styles {
+    <style>
+        .p-t-20 {
+            padding-top: 5px !important;
+        }
+
+        input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        input[type=number] {
+            -moz-appearance: textfield;
+        }
+
+        .DataEntryBox input.form-control, textarea.form-control, select.form-control {
+            margin-top: 8px !important;
+            background-color: white !important;
+        }
+
+        .FileUpload, .BulkUpload {
+            padding: .200rem .48rem;
+            font-weight: 600;
+        }
+
+        .NoFileChoosen {
+            margin-top: 17%;
+            color: cadetblue
+        }
+
+        canvas {
+            width: 99% !important;
+        }
+
+        .TiffImage {
+            width: 99% !important;
+            min-height: auto;
+            max-height: 800px;
+            overflow-y: scroll;
+        }
+
+        .ImageViewer {
+            width: 99% !important;
+            min-height: auto;
+            max-height: 800px;
+            overflow-y: scroll;
+        }
+
+        .PdfViewer > object {
+            width: 99% !important;
+            height: 800px;
+            overflow-y: scroll;
+        }
+
+        .TextViewer > object {
+            width: 99% !important;
+            min-height: auto;
+            height: 800px;
+            overflow-y: scroll;
+        }
+
+        .AnotherFormat {
+            margin-top: 14%;
+            margin-bottom: 0.2rem;
+        }
+    </style>
+}
+
+
+@if (DpList != null)
+{
+    if (DpList.Count == 1)
+    {
+        <input type="hidden" id="UserDepts" value="@DpList[0].Id">
+    }
+    else
+    {
+        <input type="hidden" id="UserDepts" value="0">
+    }
+}
+else
+{
+    <input type="hidden" id="UserDepts" value="0">
+}
+
+
+@if (ChannelList != null)
+{
+    if (ChannelList.Count == 1)
+    {
+        <input type="hidden" id="UserProds" value="@ChannelList[0].Id">
+    }
+    else
+    {
+        <input type="hidden" id="UserProds" value="0">
+    }
+}
+else
+{
+    <input type="hidden" id="UserProds" value="0">
+}
+
+<div class="mainWrapper container-fluid">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="row">
+                <h5 style="color:#525252;font-weight:700;">Document Upload (Existing Policies)</h5>
+            </div>
+        </div>
+        <div class="col-md-4">
+
+        </div>
+        <div class="col-md-2">
+            <div id="CurrentDate" class="pull-right" style="font-size:13px;font-weight:700;">@DateTime.Now.ToString("MMMM") @DateTime.Now.ToString("dd"), @DateTime.Now.ToString("yyyy")</div>
+        </div>
+    </div>
+
+    <div class="row">
+        @if (Access.AccessGroup.CanUpload)
+        {
+            <div class="col-md-6">
+                <div class="row">
+                    <input type="file" id="SingleFile" name="file" data-singlefileupload="" style="margin-right:65px;" tabindex="1">
+                </div>
+            </div>
+
+        }
+
+    </div>
+
+    <hr class="row" style="margin-top:0.1rem;margin-bottom:0.2rem;">
+
+    <div class="row">
+        <div class="col-md-8">
+            <h1 class="text-center NoFileChoosen">No File Added!</h1>
+            <div id="FileView" style="margin-left:-15px;">
+                @Html.Partial("_ViewDocumentBox")
+            </div>
+        </div>
+        <div class="col-md-4 DataEntryBox">
+            <div class="form-group">
+                <br>
+                <p class="text-center font-weight-bold" style="font-size:17px;letter-spacing:1px;margin-bottom:2px;">File Data Entry</p>
+                <div class="row">
+                    <div class="col-md-1">
+                        <div class="row">
+                            <span style="color: #f86c6b;font-weight:bold;font-size:20px;margin-top:13px;margin-left:10px;">*</span>
+                        </div>
+                    </div>
+                    <div class="col-md-11">
+                        <div class="row">
+                            <input type="text" class="form-control Name" placeholder="Enter File Name" required tabindex="1" disabled>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-1">
+                        <div class="row">
+                            <span style="color: #f86c6b;font-weight:bold;font-size:20px;margin-top:13px;margin-left:10px;">*</span>
+                        </div>
+                    </div>
+                    <div class="col-md-11">
+                        <div class="row">
+                            <input type="text" class="form-control OldPolicyNo" placeholder="Enter Old Policy Number" required tabindex="2" maxlength="7">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-1">
+                        <div class="row">
+                            <span style="color: #f86c6b;font-weight:bold;font-size:20px;margin-top:13px;margin-left:10px;">*</span>
+                        </div>
+                    </div>
+                    <div class="col-md-11">
+                        <div class="row">
+                            <input type="text" class="form-control NewPolicyNo" placeholder="Enter New Policy Number" required tabindex="3" maxlength="19">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-1">
+                        <div class="row">
+                            <span style="color: #f86c6b;font-weight:bold;font-size:20px;margin-top:13px;margin-left:10px;">*</span>
+                        </div>
+                    </div>
+                    <div class="col-md-11">
+                        <div class="row">
+
+                            <select class="form-control CategoryList m-t-5" tabindex="4">
+                                @if (DpList != null)
+                                {
+                                    if (DpList.Count > 0)
+                                    {
+                                        <option value="0" data-shortname="0">Select Category</option>
+                                        foreach (var val in DpList)
+                                        {
+                                            <option value="@val.Id" data-shortname="@val.ShortName">@val.Name</option>
+                                        }
+                                    }
+                                }
+                            </select>
+
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-1">
+                        <div class="row">
+                            <span style="color: #f86c6b;font-weight:bold;font-size:20px;margin-top:13px;margin-left:10px;">*</span>
+                        </div>
+                    </div>
+                    <div class="col-md-11">
+                        <div class="row">
+
+                            <select class="form-control ChannelList DocFilters" tabindex="5" disabled>
+                                @if (ChannelList != null)
+                                {
+                                    if (ChannelList.Count > 0)
+                                    {
+                                        <option value="0" data-shortname="0">Select Channel</option>
+                                        if (DpList != null)
+                                        {
+                                            if (DpList.Count > 0)
+                                            {
+                                                foreach (var val in ChannelList)
+                                                {
+                                                    <option value="@val.Id" data-shortname="@val.ShortName">@val.Name</option>
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            </select>
+
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-1">
+                        <div class="row">
+                            <span style="color: #f86c6b;font-weight:bold;font-size:20px;margin-top:13px;margin-left:10px;"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-11">
+                        <div class="row">
+                            <input type="text" class="form-control DocCNIC" placeholder="Enter PolicyOwner CNIC" tabindex="6" disabled>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-1">
+                        <div class="row">
+                            <span style="color: #f86c6b;font-weight:bold;font-size:20px;margin-top:13px;margin-left:10px;"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-11">
+                        <div class="row">
+                            <input type="text" class="form-control SecondCNIC" placeholder="Enter LifeAssured CNIC" tabindex="7" disabled>
+                        </div>
+                    </div>
+                </div>
+
+
+                <br>
+                <div class="row">
+                    <div class="col-md-1">
+                        <div class="row">
+                            <span style="color: #f86c6b;font-weight:bold;font-size:20px;margin-top:13px;margin-left:10px;"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-11">
+                        <div class="row">
+                            <button class="btn btn-primary SingleFileUpload" type="button" style="display:none;width:100%;" tabindex="9">Upload</button>
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<button id="CheckFile" type="button" style="display:none;"></button>
+
+
+<div class="modal fade" id="SendEmailModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-md modal-primary" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Send Email</h4>
+                <button class="close closeModal" type="button" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <input type="text" class="form-control" id="ToEmail" name="ToEmail" data-emailrecipients="" placeholder="Enter Recipients Semicolon(;) Seperated...">
+                    <input type="text" class="form-control" id="BccEmail" name="BccEmail" placeholder="Enter Bcc Recipients Semicolon(;) Seperated...">
+                    <textarea class="form-control" id="EmailHeader" placeholder="Enter Email Subject..." rows="1"></textarea>
+                    <textarea class="form-control" id="EmailBody" placeholder="Enter Email Body..." rows="2"></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary SendEmail" data-dismiss="modal" style="display:none;">Send</button>
+                <button class="btn btn-warning closeModal" type="button" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts {
+    <script src="~/Scripts/tiff.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            if ($("#UserDepts").val() > 0)
+                $(".CategoryList").val($("#UserDepts").val())
+
+              if ($("#UserProds").val() > 0)
+              $(".ChannelList").val($("#UserProds").val())
+
+
+                $('.DocCNIC').on('keypress', function (event) {
+                var regex = new RegExp("^[0-9]+$");
+                var key = String.fromCharCode(!event.charCode ? event.which : event.charCode);
+                if (!regex.test(key)) {
+                   event.preventDefault();
+                   return false;
+                }
+                });
+
+                $('.SecondCNIC').on('keypress', function (event) {
+                var regex = new RegExp("^[0-9]+$");
+                var key = String.fromCharCode(!event.charCode ? event.which : event.charCode);
+                if (!regex.test(key)) {
+                   event.preventDefault();
+                   return false;
+                }
+             });
+
+            $("#SingleFile").change(function () {
+                var fileUpload = $("#SingleFile").get(0);
+                var files = fileUpload.files;
+                var fileData = new FormData();
+                for (var i = 0; i < files.length; i++) {
+                    fileData.append(files[i].name, files[i]);
+                }
+                fileData.append('SingleFile', 'File');
+                $(this).data("singlefileupload", fileData);
+
+                if ($("#SingleFile").data("singlefileupload") != "") {
+                    $(".SingleFileUpload").fadeIn();
+                    var SingleFile = $("#SingleFile").data("singlefileupload");
+                    $.ajax({
+                        type: 'POST',
+                        url: '@Url.Action("FileTempUpload","Document")',
+                        processData: false,
+                        contentType: false,
+                        data: SingleFile,
+                        beforeSend: function () {
+                            $("#cover-spin").show();
+                        },
+                        success: function (data) {
+                            if (data != null) {
+                                $(".NoFileChoosen").hide();
+                                $("#FileView").html("");
+                                $("#FileView").html(data.trim());
+                                if ($(".anchor").find(".TiffImage").length > 0) {
+                                       Tiff.initialize({TOTAL_MEMORY: 1000000000});
+                                    var path = $(".TiffImage").data("path");
+                                    var xhr = new XMLHttpRequest();
+                                    xhr.responseType = 'arraybuffer';
+                                    xhr.open('GET', path);
+                                    xhr.onload = function (e) {
+                                        var tiff = new Tiff({ buffer: xhr.response });
+                                         for (var i = 0, len = tiff.countDirectory(); i < len; ++i) {
+                                              tiff.setDirectory(i);
+                                              var canvas = tiff.toCanvas();
+                                              $('.TiffImage').append(canvas);
+                                        }
+                                    }
+                                    xhr.send();
+                                }
+                            } else {
+                                $(".SingleFileUpload").hide();
+                                $(".NoFileChoosen").fadeIn();
+                            }
+                           setTimeout(function () { $("#cover-spin").hide(); }, 3000);
+                        }
+
+                    })
+                }
+            })
+
+            $(document).on("click", ".SingleFileUpload", function () {
+                var Doc = {
+                    Name: $(".Name").val(),
+                    OldPolicyNo: $(".OldPolicyNo").val(),
+                    NewPolicyNo: $(".NewPolicyNo").val(),
+                    DpId: $(".CategoryList option:selected").val(),
+                    PrId: $(".ChannelList option:selected").val(),
+                    DocCNIC: $(".DocCNIC").val(),
+                    SecondCNIC: $(".SecondCNIC").val()
+                };
+
+                var SingleFile = $("#SingleFile").data("singlefileupload");
+                if (Doc.Name != "") {
+                    if (Doc.OldPolicyNo != "" || Doc.NewPolicyNo != "") {
+                        if (Doc.DpId != "0") {
+                            if (Doc.PrId != "0") {
+                                if (SingleFile != "") {
+                                    $.ajax({
+                                        type: 'POST',
+                                        url: '@Url.Action("SingleDocumentUpload","Document")',
+                                        data: Doc,
+                                        beforeSend: function () {
+                                            $("#cover-spin").show();
+                                        },
+                                        complete: function () {
+                                            setTimeout(function () { $("#cover-spin").hide(); }, 3000);
+                                        },
+                                        success: function (data) {
+                                            if (data == false) {
+                                                alert("Something Wrong Try Again!")
+                                                $("#SingleFile").val("");
+                                                $("#SingleFile").data("singlefileupload", "")
+                                                $(".SingleFileUpload").hide();
+                                                $(".NoFileChoosen").hide();
+                                            } else {
+                                                $(".Name").val("");
+                                                $(".OldPolicyNo").val("");
+                                                $(".NewPolicyNo").val("");
+                                                $(".CategoryList").val(0);
+                                                $(".ChannelList").val(0);
+                                                $("#SingleFile").val("");
+                                                $("#SingleFile").data("singlefileupload", "")
+                                                $(".SingleFileUpload").hide();
+                                                $(".NoFileChoosen").hide();
+                                                $.ajax({
+                                                    type: 'POST',
+                                                    url: '@Url.Action("SingleFileUpload","Document")',
+                                                    processData: false,
+                                                    contentType: false,
+                                                    data: SingleFile,
+                                                    beforeSend: function () {
+                                                        $("#cover-spin").show();
+                                                    },
+                                                    complete: function () {
+                                                        setTimeout(function () { $("#cover-spin").hide(); }, 1000);
+                                                    },
+                                                    success: function (data) {
+                                                        if (data != null) {
+                                                            Swal.fire({
+                                                                title: 'File Added!',
+                                                                timer: 2000,
+                                                                type: 'success',
+                                                                showCancelButton: false,
+                                                                showConfirmButton: false
+                                                            })
+                                                            setTimeout(function () { location.reload(true); }, 2000);
+                                                        }
+                                                    }
+                                                })
+
+                                            }
+                                        }
+                                    })
+                                } else {
+                                    alert("Please Add File First.")
+                                    }
+                            } else {
+                                $(".ChannelList").css("border", "1px solid red");
+                                $(".ChannelList").focus();
+                                return false;
+                            }
+                        } else {
+                            $(".CategoryList").css("border", "1px solid red");
+                            $(".CategoryList").focus();
+                            return false;
+                        }
+                    } else {
+                        $(".OldPolicyNo").css("border", "1px solid red");
+                        $(".NewPolicyNo").css("border", "1px solid red");
+                    return false;
+                }
+                } else {
+                    $(".Name").css("border", "1px solid red");
+                    $(".Name").focus();
+                    return false;
+                }
+            })
+
+
+               $(".OldPolicyNo").on("focusout", function (e) {
+                if ($(this).val().length > 0) {
+                        $('#CheckFile').trigger('click');
+                }
+             })
+
+            $(".NewPolicyNo").on("focusout", function (e) {
+                if ($(this).val().length > 0) {
+                        $('#CheckFile').trigger('click');
+                }
+            })
+
+
+            $(document).on("click", "#CheckFile", function () {
+                var oldPolicyNo = $(".OldPolicyNo").val()
+                var newPolicyNo = $(".NewPolicyNo").val()
+                var Issue = false;
+                    $.ajax({
+                        type: 'POST',
+                        url: '@Url.Action("FileCheck","Document")',
+                        data: { OldPolicyNo: oldPolicyNo,  NewPolicyNo: newPolicyNo},
+                        beforeSend: function () {
+                            $("#cover-spin").show();
+                        },
+                        complete: function () {
+                            setTimeout(function () { $("#cover-spin").hide(); }, 500);
+                        },
+                        success: function (data) {
+                            if (data == false) {
+                                alert("Something Wrong Try Again!")
+                            } else {
+                                if (data.DocNotExist) {
+                                    Swal.fire({
+                                        title: 'Warning',
+                                        text: data.Message,
+                                        type: "warning",
+                                        showCancelButton: false,
+                                        showConfirmButton: false,
+                                    })
+                                } else {
+                                    if (data.Doc != null) {
+
+                                        if (data.Doc.Department.DpId != null && data.Doc.Department.DpId != "") {
+                                            $(".CategoryList option").each(function () {
+                                                if (data.Doc.DpId == $(this).val()) {
+                                                    $(".CategoryList").val(data.Doc.Department.DpId)
+                                                    Issue = false;
+                                                    return false;
+                                                } else
+                                                    Issue = true;
+                                            })
+                                            if (Issue) {
+                                                Swal.fire({
+                                                     title: 'Warning!',
+                                                     text : 'Not Allowed To See Desired Document!',
+                                                     timer: 2000,
+                                                     type: "warning",
+                                                    showCancelButton: false,
+                                                    showConfirmButton: false
+                                                 })
+                                                return false;
+                                            }
+                                        }else {
+                                            $(".CategoryList").prop("disabled", false);
+                                        }
+                                        if (data.Doc.Product.PrId  != null && data.Doc.Product.PrId != "") {
+                                            $(".ChannelList option").each(function () {
+                                                if (data.Doc.PrShortName == $(this).val()) {
+                                                    $(".ChannelList").val(data.Doc.Product.PrId)
+                                                    Issue = false;
+                                                    return false;
+                                                } else
+                                                    Issue = true;
+                                            })
+                                            if (Issue) {
+                                                Swal.fire({
+                                                    title: 'Warning!',
+                                                    text: 'Not Allowed To See Desired Document!',
+                                                    timer: 2000,
+                                                    type: "warning",
+                                                    showCancelButton: false,
+                                                    showConfirmButton: false
+                                                })
+                                                return false;
+                                            }
+                                        } else {
+                                            $(".ChannelList").prop("disabled", false);
+                                        }
+
+                                        if (!Issue) {
+                                            if (data.Doc.Name != null){
+                                                $(".Name").val(data.Doc.Name)
+                                                $(".Name").prop("disabled",false);
+                                               }
+                                            else{
+                                                $(".Name").val("")
+												$(".Name").prop("disabled",false);
+												}
+
+                                            if ($(".OldPolicyNo").val().length > 0) {
+                                                if (data.Doc.NewPolicyNo != null)
+                                                    $(".NewPolicyNo").val(data.Doc.NewPolicyNo)
+                                                else
+                                                    $(".NewPolicyNo").val("")
+                                            } else {
+                                                if (data.Doc.OldPolicyNo != null)
+                                                    $(".OldPolicyNo").val(data.Doc.OldPolicyNo)
+                                                else
+                                                    $(".OldPolicyNo").val("")
+                                            }
+
+
+                                            if (data.Doc.DocCNIC != null)
+                                                $(".DocCNIC").val(data.Doc.DocCNIC)
+                                            else
+                                                $(".DocCNIC").val("")
+
+                                            if (data.Doc.SecondCNIC != null)
+                                                $(".SecondCNIC").val(data.Doc.SecondCNIC)
+                                            else
+                                                $(".SecondCNIC").val("")
+                                        }
+
+
+                                    } else
+                                        alert("Something Went Wrong!")
+                                }
+                            }
+                        }
+                })
+            })
+
+        })
+    </script>
+}

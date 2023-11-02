@@ -1,0 +1,52 @@
+﻿@model Search_n_View.ViewModels.EditProductIdViewModel
+@{
+    ViewBag.Title = "Edit Channel";
+}
+
+<div>
+    <div class="animated fadeIn">
+        <div class="row">
+            <div class="col-sm-3"></div>
+            <div class="col-sm-6">
+                @using (Html.BeginForm("Edit", "Product", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+                {
+                    <div class="card">
+                        <div class="card-header">
+                            <h5>@ViewBag.Title</h5>
+                        </div>
+                        <div class="card-body">
+                            @Html.AntiForgeryToken()
+                            @Html.ValidationSummary("", new { @class = "text-danger" })
+                            <div class="form-group row">
+                                @Html.LabelFor(m => m.Name, new { @class = "col-md-2 col-form-label font-weight-bold" })
+                                <span style="color: #f86c6b;font-weight:bold;font-size:20px;">*</span>
+                                <div class="col-md-9">
+                                    @Html.HiddenFor(m => m.Id, new { @class = "form-control" })
+                                    @Html.TextBoxFor(m => m.Name, new { @class = "form-control", })
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-md-2 col-form-label font-weight-bold">Code</label>
+                                <span style="color: #f86c6b;font-weight:bold;font-size:20px;">*</span>
+                                <div class="col-md-9">
+                                    @Html.TextBoxFor(m => m.ShortName, new { @class = "form-control", disabled = "disabled" })
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="card-footer">
+                            <button class="btn btn-md btn-primary mr-3" type="submit">
+                                <i class="fa fa-dot-circle-o"></i> Save
+                            </button>
+                            <a class="btn btn-md btn-primary ml-3" href="@Url.Action("Index", "Product")">
+                                <i class="fa fa-close"></i> Cancel
+                            </a>
+                        </div>
+                    </div>
+                }
+
+            </div>
+        </div>
+    </div>
+</div>
+

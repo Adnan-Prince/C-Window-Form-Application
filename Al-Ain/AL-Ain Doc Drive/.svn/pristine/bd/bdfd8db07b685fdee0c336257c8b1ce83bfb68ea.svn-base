@@ -1,0 +1,145 @@
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Web;
+using System.Web.Mvc;
+using OfficeOpenXml;
+using Search_n_View.Models;
+
+namespace Search_n_View.Controllers
+{
+    public class BulkUploadController : Controller
+    {
+        private ApplicationDbContext db = new ApplicationDbContext();
+        // GET: BulkUpload
+        public ActionResult UploadData()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult UploadData(HttpPostedFileBase fileToUpload)
+        {
+            try
+            {
+                var ActivePath = db.ActiveDrive.Where(x => x.IsActive == true).FirstOrDefault();
+                string CurrentUserName = User.Identity.Name;
+                string Date = DateTime.Now.ToString("ddMMyyyy");
+
+                if (fileToUpload != null && fileToUpload.ContentLength > 0)
+                {
+                    ExcelPackage.LicenseContext = LicenseContext.Commercial;
+                    // If you use EPPlus in a noncommercial context
+                    // according to the Polyform Noncommercial license:
+                    ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+
+                    using (var package = new ExcelPackage(fileToUpload.InputStream))
+                    {
+                        ExcelWorksheet worksheet = package.Workbook.Worksheets[0]; // Assuming the data is in the first worksheet
+
+                        for (int row = 2; row <= worksheet.Dimension.End.Row; row++) // Skip the header row (if present)
+                        {
+                            var rowData = new AlAinDocument
+                            {
+                                DocPath = Date + "\\" +  GetFileName(worksheet.Cells[row, 1].Value.ToString()),
+                                Extension = GetFileExtension(worksheet.Cells[row, 1].Value.ToString()),
+                                PageCount = string.IsNullOrEmpty(worksheet.Cells[row, 2].Value.ToString()) ? 0 : Convert.ToInt32(worksheet.Cells[row, 2].Value),
+                                BatchNo = worksheet.Cells[row, 3].Value.ToString(),
+                                InvoiceNo = worksheet.Cells[row, 4].Value.ToString(),
+                                DtId = GetBranchIDByBranchName(worksheet.Cells[row, 5].Value.ToString()),//Pharmacy Branch Name
+                                InvoiceDate = string.IsNullOrEmpty(worksheet.Cells[row, 6].Value.ToString()) ? DateTime.Now : Convert.ToDateTime(worksheet.Cells[row, 6].Value),
+                                ItID = GetPharmacyIDByPharmacyName(worksheet.Cells[row, 7].Value.ToString()),//Pharmacy Name
+
+                                // Below are the db columns that cannot be null. So, we need to give them some dummy values
+                                //ItID = 1038,
+                                //DtId = 1040,
+                                ChannelName = "Back_Office",
+                                BaseDrivePath = ActivePath.BasePath,
+                                ScannedFilePath = ActivePath.BasePath,
+                                AddedBy = CurrentUserName,
+                                AddedTime = DateTime.Now,
+                                ModifiedTime = DateTime.Now,
+                                IsActive = true,
+                                IsApproved = true,
+                                IsDeleted = false
+
+                            };
+
+                            // Save the rowData to the database using Entity Framework
+                            db.AlAinDocument.Add(rowData); // Make sure you have an instance of your DbContext (db) and an appropriate DbSet in your DbContext.
+                        }
+
+                        db.SaveChanges(); // Save changes to the database
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+                //Helpers.Logs.ErrorLog("DocumentController", "SelectedDocumentDetail", ex.Message, ex.Source, ex.StackTrace);
+            }
+            
+
+            return RedirectToAction("Index"); // Redirect to your desired view after processing the Excel file.
+        }
+
+        private int GetBranchIDByBranchName(string branchName)
+        {
+            var extractedValue = db.DocumentType.Where(x => x.Name == branchName).FirstOrDefault();
+
+            if (extractedValue != null)
+            {
+                return Convert.ToInt32(extractedValue.Id);
+            }
+            else
+            {
+                return 00;
+            }
+        }
+        private int GetPharmacyIDByPharmacyName(string pharmacyName)
+        {
+            var extractedValue = db.ItemType.Where(x => x.Name == pharmacyName).FirstOrDefault();
+
+            if (extractedValue != null)
+            {
+                return Convert.ToInt32(extractedValue.Id);
+            }
+            else
+            {
+                return 00;
+            }
+        }
+        private string GetFileName(string value)
+        {
+            try
+            {
+                string fileName = string.Empty;
+                //Path.GetExtension(value); // returns .exe
+                fileName = Path.GetFileNameWithoutExtension(value); // returns File
+
+                return fileName;
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+            
+        }
+        private string GetFileExtension(string value)
+        {
+            try
+            {
+                string fileExtension = string.Empty;
+                fileExtension = Path.GetExtension(value); // returns .exe
+
+                return fileExtension;
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+
+        }
+    }
+}

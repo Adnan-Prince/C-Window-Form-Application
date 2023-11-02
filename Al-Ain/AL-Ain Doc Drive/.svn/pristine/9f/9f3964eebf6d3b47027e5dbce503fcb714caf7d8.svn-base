@@ -1,0 +1,119 @@
+﻿@using Search_n_View.Helpers
+@model Search_n_View.ViewModels.MCViewModel
+@{
+    ViewBag.Title = "Create Mapping";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+     string message = Convert.ToString(ViewData["Message"]);
+}
+@section styles {
+    <link href="~/Content/bootstrap-select.css" rel="stylesheet" />
+    <style>
+        input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        input[type=number] {
+            -moz-appearance: textfield;
+        }
+        .select2-search__field, .select2-search__field2 {
+            height: 32px !important;
+            margin-top: -3px !important;
+            font-size: 12px !important;
+        }
+        .btn-light {
+            background-color: white !important;
+            color: dimgray !important;
+        }
+    </style>
+}
+<div>
+    <div class="animated fadeIn">
+        <div class="row">
+            <div class="col-sm-3"></div>
+            <div class="col-sm-6">
+                @using (Html.BeginForm("Create", "MCMapping", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+                {
+                    <div class="card">
+                        <div class="card-header">
+                            <h5>@ViewBag.Title</h5>
+                        </div>
+                        <div class="card-body">
+                            @Html.AntiForgeryToken()
+                            @Html.ValidationSummary("", new { @class = "text-danger" })
+
+                            @if (message != "")
+                            {
+                                <div class="form-group row">
+                                    <ul><li style="color: #f86c6b;">@message</li></ul>
+                                </div>
+                            }
+                            <div class="form-group row">
+                                <label class="col-md-3 col-form-label font-weight-bold">Name</label>
+                                <span style="color: #f86c6b;font-weight:bold;font-size:20px;">*</span>
+                                <div class="col-md-8">
+                                    @Html.TextBoxFor(model => model.Name, htmlAttributes: new { @class = "form-control", @placeholder = "Enter a Mapping Name", @required = "required", @tabindex = 1 })
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-md-3 col-form-label font-weight-bold">Makers</label>
+                                <span style="color: #f86c6b;font-weight:bold;font-size:20px;">*</span>
+                                <div class="col-md-8">
+                                    @Html.DropDownListFor(model => model.MakerId, Model.Makers, htmlAttributes: new { @id = "mySelectJQ", @class = "form-control selectpicker MakersList select2-search__field", @title = "Select Makers", @multiple = "multiple", data_live_search = "true", tabindex = 2 })
+                                </div>
+                            </div>
+                            <div id="divCheckers">
+                                <div class="form-group row">
+                                    <label class="col-md-3 col-form-label font-weight-bold">Checkers</label>
+                                    <span style="color: #f86c6b;font-weight:bold;font-size:20px;">*</span>
+                                    <div class="col-md-8">
+                                        @Html.DropDownListFor(model => model.CheckerId, Model.Checkers, htmlAttributes: new { @class = "form-control selectpicker CheckersList select2-search__field2", @title = "Select Checker", @multiple = "multiple", data_live_search = "true", tabindex = 3 })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <button class="btn btn-md btn-primary mr-3" type="submit">
+                                <i class="fa fa-dot-circle-o"></i> Create
+                            </button>
+                            <a class="btn btn-md btn-primary ml-3" href="@Url.Action("Index", "MCMapping")">
+                                <i class="fa fa-close"></i> Cancel
+                            </a>
+                        </div>
+                    </div>
+                }
+
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/Scripts/bootstrap-select.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('.selectpicker').selectpicker();
+            $('.CheckersList').prop("disabled", true);
+        })
+
+        $('#mySelectJQ').on('changed.bs.select' , function () {
+            var ID = $('#mySelectJQ').val();
+            $('#divCheckers').html('');
+             $.ajax({
+                url: '@Url.Action("GetCheckers", "MCMapping")',
+                type: 'POST',
+                 contentType: 'application/x-www-form-urlencoded',
+                 data: { Id: ID },
+                 success: function (response) {
+                     if (response == null) {
+                         
+                     }
+                     else {
+                         $('#divCheckers').html(response);
+                     }
+                    
+                }
+            }) 
+        });
+    </script>
+}

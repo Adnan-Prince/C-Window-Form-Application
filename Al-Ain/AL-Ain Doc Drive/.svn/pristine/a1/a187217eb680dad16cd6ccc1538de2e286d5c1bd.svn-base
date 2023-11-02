@@ -1,0 +1,62 @@
+﻿@{
+        ViewBag.Title = "UploadData";
+    }
+
+
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="row">
+                <h4 style="color:#525252;font-weight:700;">Upload Excel Data</h4>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            @*<form action="upload.php" method="post" enctype="multipart/form-data">
+            Select image to upload:
+            <input type="file" name="fileToUpload" id="fileToUpload">
+            <input type="submit" value="Upload Image" class="btn btn-primary btn-md" name="submit">
+        </form>*@
+
+            @using (Html.BeginForm("UploadData", "BulkUpload", FormMethod.Post, new { enctype = "multipart/form-data" }))
+            {
+                <div class="form-group">
+                    <input type="file" name="fileToUpload" id="fileToUpload">
+                </div>
+
+                <input type="submit" value="Upload" class="btn btn-primary" />
+            }
+        </div>
+
+    </div>
+
+
+@*@model Search_n_View.ExcelFileUploadModel
+
+@{
+    ViewBag.Title = "Upload Excel";
+}
+
+<h2>Upload Excel File</h2>
+
+@using (Html.BeginForm("UploadExcel", "Excel", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.ExcelFile, htmlAttributes: new { @class = "control-label" })
+        @Html.InputFor(model => model.ExcelFile, new { type = "file", @class = "form-control" })
+    </div>
+
+    <input type="submit" value="Upload" class="btn btn-primary" />
+}
+
+<div>
+    @ViewBag.Message
+</div>*@
+
+
+

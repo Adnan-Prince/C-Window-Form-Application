@@ -1,0 +1,62 @@
+C:\Users\M.Adnan Ashraf\source\repos\Al_Ain_DataEntry\Al_Ain_DataEntry\bin\Debug\Al_Ain_DataEntry.exe.config
+C:\Users\M.Adnan Ashraf\source\repos\Al_Ain_DataEntry\Al_Ain_DataEntry\bin\Debug\Al_Ain_DataEntry.exe
+C:\Users\M.Adnan Ashraf\source\repos\Al_Ain_DataEntry\Al_Ain_DataEntry\bin\Debug\Al_Ain_DataEntry.pdb
+C:\Users\M.Adnan Ashraf\source\repos\Al_Ain_DataEntry\Al_Ain_DataEntry\obj\Debug\Al_Ain_DataEntry.csproj.AssemblyReference.cache
+C:\Users\M.Adnan Ashraf\source\repos\Al_Ain_DataEntry\Al_Ain_DataEntry\obj\Debug\Al_Ain_DataEntry.DataEntry.resources
+C:\Users\M.Adnan Ashraf\source\repos\Al_Ain_DataEntry\Al_Ain_DataEntry\obj\Debug\Al_Ain_DataEntry.Properties.Resources.resources
+C:\Users\M.Adnan Ashraf\source\repos\Al_Ain_DataEntry\Al_Ain_DataEntry\obj\Debug\Al_Ain_DataEntry.csproj.GenerateResource.cache
+C:\Users\M.Adnan Ashraf\source\repos\Al_Ain_DataEntry\Al_Ain_DataEntry\obj\Debug\Al_Ain_DataEntry.csproj.CoreCompileInputs.cache
+C:\Users\M.Adnan Ashraf\source\repos\Al_Ain_DataEntry\Al_Ain_DataEntry\obj\Debug\Al_Ain_DataEntry.exe
+C:\Users\M.Adnan Ashraf\source\repos\Al_Ain_DataEntry\Al_Ain_DataEntry\obj\Debug\Al_Ain_DataEntry.pdb
+C:\Users\M.Adnan Ashraf\source\repos\Al_Ain_DataEntry\Al_Ain_DataEntry\bin\Debug\System.Configuration.ConfigurationManager.dll
+C:\Users\M.Adnan Ashraf\source\repos\Al_Ain_DataEntry\Al_Ain_DataEntry\bin\Debug\System.Security.AccessControl.dll
+C:\Users\M.Adnan Ashraf\source\repos\Al_Ain_DataEntry\Al_Ain_DataEntry\bin\Debug\System.Security.Permissions.dll
+C:\Users\M.Adnan Ashraf\source\repos\Al_Ain_DataEntry\Al_Ain_DataEntry\bin\Debug\System.Security.Principal.Windows.dll
+C:\Users\M.Adnan Ashraf\source\repos\Al_Ain_DataEntry\Al_Ain_DataEntry\bin\Debug\System.Configuration.ConfigurationManager.xml
+C:\Users\M.Adnan Ashraf\source\repos\Al_Ain_DataEntry\Al_Ain_DataEntry\bin\Debug\System.Security.AccessControl.xml
+C:\Users\M.Adnan Ashraf\source\repos\Al_Ain_DataEntry\Al_Ain_DataEntry\bin\Debug\System.Security.Permissions.xml
+C:\Users\M.Adnan Ashraf\source\repos\Al_Ain_DataEntry\Al_Ain_DataEntry\bin\Debug\System.Security.Principal.Windows.xml
+C:\Users\M.Adnan Ashraf\source\repos\Al_Ain_DataEntry\Al_Ain_DataEntry\obj\Debug\Al_Ain_DataEntry.csproj.CopyComplete
+C:\Users\M.Adnan Ashraf\source\repos\Al_Ain_DataEntry\Al_Ain_DataEntry\obj\Debug\Al_Ain_DataEntry.Login.resources
+E:\Adnan Projects\Al_Ain_DataEntry\Al_Ain_DataEntry\bin\Debug\Al_Ain_DataEntry.exe.config
+E:\Adnan Projects\Al_Ain_DataEntry\Al_Ain_DataEntry\bin\Debug\Al_Ain_DataEntry.exe
+E:\Adnan Projects\Al_Ain_DataEntry\Al_Ain_DataEntry\bin\Debug\Al_Ain_DataEntry.pdb
+E:\Adnan Projects\Al_Ain_DataEntry\Al_Ain_DataEntry\bin\Debug\System.Configuration.ConfigurationManager.dll
+E:\Adnan Projects\Al_Ain_DataEntry\Al_Ain_DataEntry\bin\Debug\System.Security.AccessControl.dll
+E:\Adnan Projects\Al_Ain_DataEntry\Al_Ain_DataEntry\bin\Debug\System.Security.Permissions.dll
+E:\Adnan Projects\Al_Ain_DataEntry\Al_Ain_DataEntry\bin\Debug\System.Security.Principal.Windows.dll
+E:\Adnan Projects\Al_Ain_DataEntry\Al_Ain_DataEntry\bin\Debug\System.Configuration.ConfigurationManager.xml
+E:\Adnan Projects\Al_Ain_DataEntry\Al_Ain_DataEntry\bin\Debug\System.Security.AccessControl.xml
+E:\Adnan Projects\Al_Ain_DataEntry\Al_Ain_DataEntry\bin\Debug\System.Security.Permissions.xml
+E:\Adnan Projects\Al_Ain_DataEntry\Al_Ain_DataEntry\bin\Debug\System.Security.Principal.Windows.xml
+E:\Adnan Projects\Al_Ain_DataEntry\Al_Ain_DataEntry\obj\Debug\Al_Ain_DataEntry.csproj.AssemblyReference.cache
+E:\Adnan Projects\Al_Ain_DataEntry\Al_Ain_DataEntry\obj\Debug\Al_Ain_DataEntry.csproj.SuggestedBindingRedirects.cache
+E:\Adnan Projects\Al_Ain_DataEntry\Al_Ain_DataEntry\obj\Debug\Al_Ain_DataEntry.DataEntry.resources
+E:\Adnan Projects\Al_Ain_DataEntry\Al_Ain_DataEntry\obj\Debug\Al_Ain_DataEntry.Login.resources
+E:\Adnan Projects\Al_Ain_DataEntry\Al_Ain_DataEntry\obj\Debug\Al_Ain_DataEntry.Properties.Resources.resources
+E:\Adnan Projects\Al_Ain_DataEntry\Al_Ain_DataEntry\obj\Debug\Al_Ain_DataEntry.csproj.GenerateResource.cache
+E:\Adnan Projects\Al_Ain_DataEntry\Al_Ain_DataEntry\obj\Debug\Al_Ain_DataEntry.csproj.CoreCompileInputs.cache
+E:\Adnan Projects\Al_Ain_DataEntry\Al_Ain_DataEntry\obj\Debug\Al_Ain_DataEntry.csproj.CopyComplete
+E:\Adnan Projects\Al_Ain_DataEntry\Al_Ain_DataEntry\obj\Debug\Al_Ain_DataEntry.exe
+E:\Adnan Projects\Al_Ain_DataEntry\Al_Ain_DataEntry\obj\Debug\Al_Ain_DataEntry.pdb
+E:\Adnan Projects\New folder\Al_Ain_DataEntry\Al_Ain_DataEntry\obj\Debug\Al_Ain_DataEntry.csproj.AssemblyReference.cache
+E:\Adnan Projects\New folder\Al_Ain_DataEntry\Al_Ain_DataEntry\obj\Debug\Al_Ain_DataEntry.csproj.SuggestedBindingRedirects.cache
+E:\Adnan Projects\New folder\Al_Ain_DataEntry\Al_Ain_DataEntry\obj\Debug\Al_Ain_DataEntry.DataEntry.resources
+E:\Adnan Projects\New folder\Al_Ain_DataEntry\Al_Ain_DataEntry\obj\Debug\Al_Ain_DataEntry.Login.resources
+E:\Adnan Projects\New folder\Al_Ain_DataEntry\Al_Ain_DataEntry\obj\Debug\Al_Ain_DataEntry.Properties.Resources.resources
+E:\Adnan Projects\New folder\Al_Ain_DataEntry\Al_Ain_DataEntry\obj\Debug\Al_Ain_DataEntry.csproj.GenerateResource.cache
+E:\Adnan Projects\New folder\Al_Ain_DataEntry\Al_Ain_DataEntry\obj\Debug\Al_Ain_DataEntry.csproj.CoreCompileInputs.cache
+E:\Adnan Projects\New folder\Al_Ain_DataEntry\Al_Ain_DataEntry\obj\Debug\Al_Ain_DataEntry.exe
+E:\Adnan Projects\New folder\Al_Ain_DataEntry\Al_Ain_DataEntry\obj\Debug\Al_Ain_DataEntry.pdb
+E:\Adnan Projects\New folder\Al_Ain_DataEntry\Al_Ain_DataEntry\bin\Debug\Al_Ain_DataEntry.exe.config
+E:\Adnan Projects\New folder\Al_Ain_DataEntry\Al_Ain_DataEntry\bin\Debug\Al_Ain_DataEntry.exe
+E:\Adnan Projects\New folder\Al_Ain_DataEntry\Al_Ain_DataEntry\bin\Debug\Al_Ain_DataEntry.pdb
+E:\Adnan Projects\New folder\Al_Ain_DataEntry\Al_Ain_DataEntry\bin\Debug\System.Configuration.ConfigurationManager.dll
+E:\Adnan Projects\New folder\Al_Ain_DataEntry\Al_Ain_DataEntry\bin\Debug\System.Security.AccessControl.dll
+E:\Adnan Projects\New folder\Al_Ain_DataEntry\Al_Ain_DataEntry\bin\Debug\System.Security.Permissions.dll
+E:\Adnan Projects\New folder\Al_Ain_DataEntry\Al_Ain_DataEntry\bin\Debug\System.Security.Principal.Windows.dll
+E:\Adnan Projects\New folder\Al_Ain_DataEntry\Al_Ain_DataEntry\bin\Debug\System.Configuration.ConfigurationManager.xml
+E:\Adnan Projects\New folder\Al_Ain_DataEntry\Al_Ain_DataEntry\bin\Debug\System.Security.AccessControl.xml
+E:\Adnan Projects\New folder\Al_Ain_DataEntry\Al_Ain_DataEntry\bin\Debug\System.Security.Permissions.xml
+E:\Adnan Projects\New folder\Al_Ain_DataEntry\Al_Ain_DataEntry\bin\Debug\System.Security.Principal.Windows.xml
+E:\Adnan Projects\New folder\Al_Ain_DataEntry\Al_Ain_DataEntry\obj\Debug\Al_Ain_DataEntry.csproj.CopyComplete

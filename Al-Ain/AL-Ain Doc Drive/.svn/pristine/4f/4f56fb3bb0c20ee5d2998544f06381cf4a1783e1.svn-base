@@ -1,0 +1,57 @@
+﻿@model Search_n_View.ViewModels.EditDocumentTypesViewModel
+@{
+    ViewBag.Title = "Edit Docuemnt Type";
+}
+<div>
+    <div class="animated fadeIn">
+        <div class="row">
+            <div class="col-sm-3"></div>
+            <div class="col-sm-6">
+                @using (Html.BeginForm("EditDocType", "Document", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+                {
+                    <div class="card">
+                        <div class="card-header">
+                            <strong>Edit Document Type</strong>
+                        </div>
+                        <div class="card-body">
+                            @Html.AntiForgeryToken()
+                            @Html.ValidationSummary("", new { @class = "text-danger" })
+                            <div class="form-group row">
+                                <label class="col-md-3 col-form-label  font-weight-bold">Type</label>
+                                <span style="color: #f86c6b;font-weight:bold;font-size:20px;">*</span>
+                                <div class="col-md-8">
+                                    @Html.HiddenFor(m => m.Id, new { @class = "form-control" })
+                                    @Html.TextBoxFor(m => m.Type, new { @class = "form-control" ,tabindex = 1})
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-md-3 col-form-label  font-weight-bold">Code</label>
+                                <span style="color: #f86c6b;font-weight:bold;font-size:20px;">*</span>
+                                <div class="col-md-8">
+                                    @Html.TextBoxFor(m => m.DocumentTypeCode, new { @class = "form-control", disabled = "disabled" })
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-md-3 col-form-label  font-weight-bold">Category</label>
+                                <span style="color: #f86c6b;font-weight:bold;font-size:20px;">*</span>
+                                <div class="col-md-8">
+                                    @Html.DropDownList("DcId", null, "DocumentCategories", htmlAttributes: new { @class = "form-control" ,tabindex = 2})
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <button class="btn btn-md btn-primary mr-3" type="submit" tabindex = "3">
+                                <i class="fa fa-dot-circle-o"></i> Save
+                            </button>
+                            <a class="btn btn-md btn-primary ml-3" href="@Url.Action("DocumentTypes", "Document")" tabindex = "4">
+                                <i class="fa fa-close"></i> Cancel
+                            </a>
+                        </div>
+                    </div>
+                }
+
+            </div>
+        </div>
+    </div>
+</div>
+

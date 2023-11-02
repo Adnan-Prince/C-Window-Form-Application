@@ -1,0 +1,608 @@
+﻿@using Search_n_View.Models;
+@{
+    ViewBag.Title = "Document Search";
+    List<AlAinDocument> DocList = ViewData["DocList"] as List<AlAinDocument>;
+    var ItemTypeList = ViewBag.ItemTypeList;
+    var DocTypeIds = ViewBag.DocTypeIds;
+   
+
+}
+
+
+@section styles {
+    <link href="~/Content/daterangepicker.min.css" rel="stylesheet" />
+    <style>
+
+        input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        input[type=number] {
+            -moz-appearance: textfield;
+        }
+
+        input.form-control, textarea.form-control {
+            margin-top: 5px;
+        }
+
+        input[type=number] {
+            -moz-appearance: textfield;
+        }
+
+        .form-control:disabled {
+            background: #fff;
+        }
+
+        .DocFilters {
+            margin-top: -1.8px !important;
+            font-size: 12px;
+        }
+
+        .DocFilterDate {
+            font-size: 13px;
+        }
+
+        .card {
+            margin-bottom: 1.3rem;
+        }
+
+        .card-header {
+            padding: .25rem 1.25rem;
+            font-size: 15px;
+        }
+
+        .card-body {
+            padding: 0.60rem;
+        }
+
+        .DocDetailViewer:hover {
+            cursor: pointer;
+        }
+
+        .DocViewer:hover {
+            cursor: zoom-in;
+        }
+
+        /*.select2-search__field {
+            width: 100% !important;
+            height: 32px !important;
+            margin-top: -3px !important;
+            font-size: 12px !important;
+        }*/
+
+        .DocDetailView {
+            height: 35px;
+            padding: 7px;
+            font-size: 13px;
+            vertical-align: top;
+            margin-top: -2px;
+            font-weight: 500;
+        }
+
+        .DocViewer {
+            height: 35px;
+            padding: 7px;
+            font-size: 13px;
+            vertical-align: top;
+            margin-top: -2px;
+            font-weight: 500;
+        }
+
+        .btn-light {
+            background-color: white;
+            color: black;
+        }
+
+        .OpenNoteDoc {
+            background-color: dimgray;
+            border: none;
+            padding: 2px 5px 4px 5px;
+            cursor: pointer;
+            font-size: 18px;
+            height: 30px;
+            border-radius: 10px;
+            color: white;
+        }
+
+            .OpenNoteDoc:hover {
+                background-color: white;
+                font-weight: 800;
+                cursor: pointer;
+            }
+
+        .noteAddedCount {
+            padding: .10em .3em;
+            font-size: 70%;
+        }
+         .DTID {
+            display:none;
+        }
+    </style>
+
+
+}
+
+
+
+@if (DocTypeIds.Count > 0)
+{
+    <select class="form-control DTID DocFilters">
+        @for (int i = 0; i < DocTypeIds.Count; i++)
+        {
+            <option value="@DocTypeIds[i]"></option>
+        }
+    </select>
+}
+
+<input type="hidden" id="ItemCount" value="@ItemTypeList.Count">
+
+<div class="row">
+    <div class="col-md-12">
+        <h4>Document Filters</h4>
+    </div>
+</div>
+<div class="DocumentFilters">
+    <div class="row">
+        <div class="col-md-12">
+
+            <div class="row">
+
+                <div class="col-md-2">
+                    <select class="form-control Channels" tabindex="1">
+                        <option value="0" data-shortname="0">Select Channel</option>
+                        <option value="AL-Ain-Pharmacy">AL-Ain Pharmacy</option>
+                        <option value="Back_Office">Back Office</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+
+                    <select class="form-control ItemTypeList DocFilters" tabindex="2">
+                        <option value="0" data-shortname="0">Select Pharmacy</option>
+                        @for (int i = 0; i < ItemTypeList.Count; i++)
+                        {
+                            if (ItemTypeList[i].Name != "All")
+                            {
+                                <option value="@ItemTypeList[i].Id">@ItemTypeList[i].Name</option>
+                            }
+                        }
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <select class="form-control DocumentTypeList DocFilters" tabindex="3">
+
+                        <option value='0'>Select Branch Name</option>
+
+                    </select>
+                </div>
+                <div class="col-md-2">
+
+                    <input type="text" class="form-control DocFilters InvoiceNo" placeholder="Enter Invoice No" tabindex="4">
+
+                </div>
+                <div class="col-md-2">
+
+                    <input type="date" class="form-control DocFilters InvoiceDate" placeholder="Select Invoice Date" tabindex="5">
+
+                </div>
+                <div class="col-md-1">
+                    <div class="row">
+                        <div class="float-lg-right">
+
+                            <button id="FilterDocuments" class="btn btn-primary btn-md" style="width:120px;margin-top:-2px;">Filter</button>
+
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+
+
+    </div>
+    <br>
+
+    <br>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card-body AllDocFilters">
+                @if (DocList != null && DocList.Count() > 0)
+                {
+                    Html.Partial("_DocList", DocList);
+                }
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<input type="hidden" id="SelectedDocumentId" value="">
+
+<div class="modal fade" id="AddNoteModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-primary" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Add Note</h4>
+                <button class="close closeModal" type="button" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <textarea class="form-control" id="NoteText" placeholder="Add Note To Document..." rows="2"></textarea>
+                    <div class="PreviousNotes" style="display:none;"></div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary AddDocNote" data-docid="" data-dismiss="modal" style="display:none;">Add</button>
+                <button class="btn btn-warning closeModal" type="button" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+    <!-- /.modal-content-->
+</div>
+
+@section Scripts {
+    <script src="~/Scripts/moment.js"></script>
+    <script src="~/Scripts/daterangepicker.js"></script>
+
+    <script>
+        $(document).ready(function () {
+
+            @*if (localStorage.getItem("BackPageFilter") != null && typeof (localStorage.getItem("BackPageFilter")) != "undefined") {
+                var Inputs = JSON.parse(localStorage.getItem("BackPageFilter"));
+                if (Inputs.Back) {
+                    $(".ClaimNo").val(Inputs.ClaimNo);
+                    if(Inputs.DeptId != "")
+			            $(".ItemTypeList").val(Inputs.ItemTypeId);
+
+                     if(Inputs.Prod != "")
+			            $(".DocumentTypeList").val(Inputs.DocumentTypeId);
+
+                    $("#Owner").val(Inputs.ownerCNIC);
+                    $("#SecondCNIC").val(Inputs.secondCNIC);
+                    Inputs.Back = false;
+                    localStorage.setItem("BackPageFilter", JSON.stringify(Inputs));
+                    $.ajax({
+                        type: 'POST',
+                        url: '@Url.Action("DocumentFilter","Document")',
+                        data: { ClaimNo: Inputs.ClaimNo, ItemTypeId: Inputs.ItemTypeId, DocTypeId: Inputs.DocumentTypeId },
+                        beforeSend: function () {
+                            $("#cover-spin").show();
+                        },
+                        complete: function () {
+                            setTimeout(function () { $("#cover-spin").hide(); }, 1000);
+                        },
+                        success: function (data) {
+                            if (data == null) {
+                                alert("Something Wrong Try Again!")
+                            } else {
+                                $(".ItemTypeList").css('border', '1px solid #e4e7ea');
+                                $(".DocumentTypeList").css('border', '1px solid #e4e7ea');
+                                $(".AllDocFilters").html("");
+                                $(".AllDocFilters").html(data);
+                                $('.datatable').DataTable({ "paging": true, "info": true, "ordering": false, "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]], "language": { "emptyTable": "No Record Found" } }); $('.datatable').attr('style', 'border-collapse: collapse !important');
+                            }
+                        }
+                    })
+                }
+        }*@
+
+           //$(document).on("click", ".applyBtn", function () {
+           //     $(".DateSelected").val(1);
+           // })
+
+            var assignedDocTypes = [];
+            debugger;
+
+            if ($(".DTID")[0]) {
+                $(".DTID > option").each(function () {
+                    assignedDocTypes.push(parseInt($(this).val()));
+                })
+            }
+
+            $('.InvoiceNo').on('keypress', function (event) {
+                var regex = new RegExp("^[0-9]+$");
+                var key = String.fromCharCode(!event.charCode ? event.which : event.charCode);
+                if (!regex.test(key)) {
+                   event.preventDefault();
+                   return false;
+                }
+             });
+
+            $('.InvoiceDate').on('keypress', function (event) {
+                 var regex = new RegExp("^[a-zA-Z0-9]+$");
+                var key = String.fromCharCode(!event.charCode ? event.which : event.charCode);
+                if (!regex.test(key)) {
+                   event.preventDefault();
+                   return false;
+                }
+             });
+
+
+             //$('.Year').on('keypress', function (event) {
+             //   var regex = new RegExp("^[0-9]+$");
+             //   var key = String.fromCharCode(!event.charCode ? event.which : event.charCode);
+             //   if (!regex.test(key)) {
+             //      event.preventDefault();
+             //      return false;
+             //   }
+             //});
+
+            $(".ItemTypeList").change(function () {
+                if ($(".ItemTypeList option:selected").val() > 0) {
+                     $(".DocumentTypeList").html("");
+                    $.ajax({
+                        type: 'POST',
+                        url: '@Url.Action("GetUserDocTypes","Document")',
+                        data: { ItemTypeId: parseInt($(".ItemTypeList option:selected").val()) },
+                        success: function (data) {
+                            var html = "<option value='0'>Select DocumentType</option>";
+                            for (var i = 0; i < data.length; i++) {
+                                    html += "<option value=" + data[i].Id + ">" + data[i].Name + "</option>";
+                            }
+                            $(".DocumentTypeList").append(html);
+                        }
+                    });
+                }
+
+            })
+
+            $(".DocumentTypeList").change(function () {
+                 if ($(".DocumentTypeList option:selected").val() > 0)
+                $(".DocumentTypeList").css('border', '1px solid #e4e7ea');
+            })
+
+            //Old Search button click event by Junaid
+            @*$(document).on("click", "#FilterDocuments", function () {
+                debugger;
+                var channel = $(".Channels option:selected").val();
+                var ItemTypeId = $(".ItemTypeList option:selected").val();
+                var DocumentTypeId = $(".DocumentTypeList option:selected").val();
+                var invoiceNo = $(".InvoiceNo").val().trim();
+                var invoiceDate = $(".InvoiceDate").val().trim();
+
+                if (channel != "" || ItemTypeId != "") {
+                    $.ajax({
+                        type: 'POST',
+                        url: '@Url.Action("DocumentFilter","Document")',
+                        data: { Channel: channel, InvoiceNo: invoiceNo, InvoiceDate: invoiceDate, ItemTypeId: ItemTypeId, DocTypeId: DocumentTypeId, AssignedDocTypes: assignedDocTypes },
+                        beforeSend: function () {
+                            $("#cover-spin").show();
+                        },
+                        complete: function () {
+                            setTimeout(function () { $("#cover-spin").hide(); }, 1000);
+                        },
+                        success: function (data) {
+                            if (data == null) {
+                                alert("Something Wrong Try Again!")
+                            } else {
+                                $(".ItemTypeList").css('border', '1px solid #e4e7ea');
+                                $(".DocumentTypeList").css('border', '1px solid #e4e7ea');
+                                $(".AllDocFilters").html("");
+                                $(".AllDocFilters").html(data);
+                                $('.datatable').DataTable({ "paging": true, "info": true, "ordering": false, "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]], "language": { "emptyTable": "No Record Found" } }); $('.datatable').attr('style', 'border-collapse: collapse !important');
+                            }
+                        }
+                    })
+                } else {
+                    if (DocumentTypeId != 0) {
+                        $.ajax({
+                            type: 'POST',
+                            url: '@Url.Action("DocumentFilter","Document")',
+                            data: { ClaimNo: claimNo, PolicyNo: policyNo, Year: year, ItemTypeId: ItemTypeId, DocTypeId: DocumentTypeId, AssignedDocTypes: assignedDocTypes },
+                            beforeSend: function () {
+                                $("#cover-spin").show();
+                            },
+                            complete: function () {
+                                setTimeout(function () { $("#cover-spin").hide(); }, 1000);
+                            },
+                            success: function (data) {
+                                if (data == null) {
+                                    alert("Something Wrong Try Again!")
+                                } else {
+                                    $(".ItemTypeList").css('border', '1px solid #e4e7ea');
+                                    $(".DocumentTypeList").css('border', '1px solid #e4e7ea');
+                                    $(".AllDocFilters").html("");
+                                    $(".AllDocFilters").html(data);
+                                    $('.datatable').DataTable({ "paging": true, "info": true, "ordering": false, "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]], "language": { "emptyTable": "No Record Found" } }); $('.datatable').attr('style', 'border-collapse: collapse !important');
+                                }
+                            }
+                        })
+                    } else {
+                        $(".DocumentTypeList").focus()
+                        $(".DocumentTypeList").css('border', '1px solid red');
+                    }
+                }
+            });*@
+
+            $(document).on("click", "#FilterDocuments", function () {
+                debugger;
+                var channel = $(".Channels option:selected").val();
+                var ItemTypeId = $(".ItemTypeList option:selected").val();
+                var DocumentTypeId = $(".DocumentTypeList option:selected").val();
+                var invoiceNo = $(".InvoiceNo").val().trim();
+                var invoiceDate = $(".InvoiceDate").val().trim();
+
+                $.ajax({
+                        type: 'POST',
+                        url: '@Url.Action("DocumentFilter","Document")',
+                        data: { Channel: channel, InvoiceNo: invoiceNo, InvoiceDate: invoiceDate, ItemTypeId: ItemTypeId, DocTypeId: DocumentTypeId},
+                        beforeSend: function () {
+                            $("#cover-spin").show();
+                        },
+                        complete: function () {
+                            setTimeout(function () { $("#cover-spin").hide(); }, 1000);
+                        },
+                    success: function (data) {
+                            setTimeout(function () { $("#cover-spin").hide(); }, 1000);
+                            if (data == null) {
+                                alert("Something Wrong Try Again!")
+                            } else {
+                                $(".ItemTypeList").css('border', '1px solid #e4e7ea');
+                                $(".DocumentTypeList").css('border', '1px solid #e4e7ea');
+                                $(".AllDocFilters").html("");
+                                $(".AllDocFilters").html(data);
+                                $('.datatable').DataTable({ "paging": true, "info": true, "ordering": false, "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]], "language": { "emptyTable": "No Record Found" } }); $('.datatable').attr('style', 'border-collapse: collapse !important');
+                                
+                            }
+                        }
+                    }) 
+            });
+
+
+            $('#NoteText').keyup(function () {
+                if ($(this).val().length > 0)
+                    $(".AddDocNote").fadeIn();
+                else
+                    $(".AddDocNote").hide();
+            });
+
+
+            $(document).on("click", ".AddDocNote", function () {
+                var Id = parseInt($("#SelectedDocumentId").val());
+                var note = $("#NoteText").val();
+                if (note != "") {
+                    $.ajax({
+                        type: 'POST',
+                        url: '@Url.Action("AddNote","Document")',
+                        data: { DocId: Id, Note: note },
+                        beforeSend: function () {
+                            $("#cover-spin").show();
+                        },
+                        complete: function () {
+                            setTimeout(function () { $("#cover-spin").hide(); }, 1000);
+                        },
+                        success: function (data) {
+                            if (data == false) {
+                                alert("Something Wrong Try Again!")
+                            } else {
+                                $("#NoteText").val("");
+                                Swal.fire({
+                                    title: 'Note Added!',
+                                    timer: 1000,
+                                    type: 'success',
+                                    showCancelButton: false,
+                                    showConfirmButton: false
+                                })
+                            }
+                        }
+                    })
+                } else {
+                    $("#NoteText").focus()
+                    $("#NoteText").css('border', '1px solid red');
+                    return false;
+                }
+            });
+
+        $(document).on("click", ".OpenNoteDoc", function () {
+            var Id = $(this).data("docid");
+            $("#SelectedDocumentId").val(Id);
+                var Notes = "";
+                $.ajax({
+                    type: 'POST',
+                    url: '@Url.Action("DocumentPreviousNote","Document")',
+                    data: { DocId: Id },
+                    beforeSend: function () {
+                        $("#cover-spin").show();
+                    },
+                    complete: function () {
+                        setTimeout(function () { $("#cover-spin").hide(); }, 1000);
+                    },
+                    success: function (data) {
+                        if (data != null) {
+                            if (data.length > 0) {
+                                Notes = "<br><div class='card' style='width:100%; font-size:12.5px;padding:5px;'><div class='card-header text-center' style='padding:.25rem 0.25rem;'>Previous Notes</div>"
+                                        + "<div class='card-body NotesCardBody' style='padding:0.25rem;'>"
+                                        + "<table class='table'>"
+                                        + "<thead>"
+                                        + "<tr>"
+                                        + "<th class='text-center'>Note</th>"
+                                        + "<th class='text-center'>Added By</th>"
+                                        + "<th class='text-center'>Added Time</th>"
+                                        + "</tr>"
+                                        + "</thead>"
+                                        + "<tbody class='DocNoteData'>";
+                                $.each(data, function (index, value) {
+                                    var date = new Date(parseInt(data[index].AddedTime.substr(6)));
+                                    Notes += "<tr class='NoteRow'>"
+                                        + "<td class='text-center'>" + data[index].Note + "</td>"
+                                        + "<td class='text-center'>" + data[index].AddedBy + "</td>"
+                                        + "<td class='text-center'>" + getDateFormatted(date) + "</td>"
+                                         +  "</tr>";
+                                    })
+                                    Notes += "</tbody>"
+                                        + "</table>"
+                                    + "</div>"
+                                    + "</div>";
+                                $(".PreviousNotes").html("");
+                                $(".PreviousNotes").html(Notes);
+                                $(".PreviousNotes").show(Notes);
+
+                                if ($(".DocNoteData").find(".NoteRow").length > 4)
+                                    $(".NotesCardBody").addClass("NotesScroller")
+                                    else
+                                       $(".NotesCardBody").removeClass("NotesScroller")
+                            } else {
+                                $(".PreviousNotes").hide();
+                            }
+                        } else {
+                             $(".PreviousNotes").hide();
+                        }
+                    }
+                })
+            })
+        })
+
+            $(document).on("click", ".DeleteNote", function () {
+            var noteId = parseInt($(this).data('noteid'));
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
+                type: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+                if (result.value) {
+                    $.ajax({
+                        type: 'POST',
+                        url: '@Url.Action("DeleteNote","Document")',
+                        data: { NoteId: noteId },
+                        beforeSend: function () {
+                            $("#cover-spin").show();
+                        },
+                        complete: function () {
+                            setTimeout(function () { $("#cover-spin").hide(); }, 1000);
+                        },
+                        success: function (data) {
+                            if (data == false) {
+                                alert("Something Wrong Try Again!")
+                            } else {
+                                Swal.fire({
+                                    title: 'Note Deleted!',
+                                    timer: 2000,
+                                    type:'success',
+                                    showCancelButton: false,
+                                    showConfirmButton: false
+                                })
+                                setTimeout(function () { $(".OpenNoteDoc").click(); }, 100);
+                            }
+                        }
+                    })
+                }
+            })
+        })
+
+
+            function getDateFormatted(date) {
+                date = String(date);
+                date = date.split(" ");
+                return date[0] + " " + date[1] + " " + date[2] + " " + date[3] + " " + date[4];
+            }
+    </script>
+
+}

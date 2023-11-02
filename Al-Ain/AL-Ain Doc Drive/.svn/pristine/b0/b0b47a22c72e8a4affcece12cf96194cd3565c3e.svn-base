@@ -1,0 +1,896 @@
+﻿@using System.Drawing;
+@using Search_n_View.Models;
+@using Microsoft.AspNet.Identity;
+@{
+    AlAinDocument Doc = ViewData["DocDetail"] as AlAinDocument;
+    var Access = ViewBag.Access;
+    var fileName = ViewBag.fileName;
+    var DocNoteCount = ViewBag.NoteAddedCount;
+    string BasePath = ViewBag.BasePath;
+
+    bool SearchUserApprove = false;
+    SearchUserApprove = User.IsInRole("SearchUserApprove");
+}
+
+
+@section styles {
+    <style>
+        .p-t-20 {
+            padding-top: 10px !important;
+        }
+
+        input.form-control {
+            margin-top: 2px;
+        }
+
+        .DataEntryBox input.form-control, textarea.form-control, select.form-control {
+            background-color: white !important;
+        }
+
+        .btn-action {
+            background-color: DodgerBlue;
+            border: none;
+            color: white;
+            padding: 6px 12px;
+            cursor: pointer;
+            font-size: 17px;
+        }
+
+            .btn-action:hover {
+                background-color: white;
+                cursor: pointer;
+            }
+
+        .btn {
+            cursor: pointer;
+        }
+
+        .DocDetailLabel {
+            font-size: 14px;
+            font-weight: bold;
+            margin-top: 8px;
+        }
+
+        .DocDetailText {
+            font-size: 13px;
+            margin-left: 15px;
+            height: 32px;
+            margin-top: 1px;
+            background-color: white !important;
+        }
+
+        .DocExtensionImgSizeDetail {
+            height: 100px;
+            width: 100px;
+        }
+
+        .OpenNoteDoc {
+            background-color: dimgray;
+            border: none;
+            padding: 2px 8px;
+            cursor: pointer;
+            font-size: 20px;
+            height: 38px;
+            border-radius: 15px;
+            color: white;
+        }
+
+            .OpenNoteDoc:hover {
+                background-color: white;
+                font-weight: 800;
+                cursor: pointer;
+            }
+
+        .NotesScroller {
+            height: 275px;
+            overflow-y: scroll;
+        }
+
+        canvas {
+            width: 99% !important;
+        }
+
+        .TextViewer {
+            width: 99% !important;
+            min-height: auto;
+            max-height: 800px;
+            /*overflow-y: scroll;*/
+        }
+
+        .ImageViewer {
+            width: 99% !important;
+            min-height: auto;
+            max-height: 800px;
+            overflow-y: scroll;
+        }
+
+
+        .PdfViewer > object {
+            width: 99% !important;
+            height: 800px;
+            overflow-y: scroll;
+        }
+
+        .TextViewer > object {
+            width: 99% !important;
+            height: 800px;
+            overflow-y: scroll;
+        }
+
+        .btn-danger {
+            padding: .175rem .55rem;
+        }
+
+        td {
+            vertical-align: middle !important;
+        }
+
+        .AnotherFormat {
+            margin-top: 19%;
+            margin-bottom: 0.2rem;
+        }
+
+        .negativeMT {
+            margin-top: -5px;
+        }
+
+        .SearchList, .BccSearchList {
+            position: absolute;
+            background-color: #f6f6f6;
+            overflow: auto;
+            border: 1px solid #ddd;
+            z-index: 1;
+            left: 16px;
+        }
+
+            .SearchList a, .BccSearchList a {
+                color: black;
+                padding: 3px 12px;
+                font-size: 14px;
+                text-decoration: none;
+                display: block;
+            }
+
+                .SearchList a:hover, .BccSearchList a:hover {
+                    background-color: #ddd;
+                    cursor: pointer;
+                }
+
+
+        #FileView .anchor .TiffImage {
+            height: 800px !important;
+            overflow-y: scroll !important;
+        }
+    </style>
+
+}
+
+
+@if (Doc != null)
+{
+
+    <input type="hidden" id="DId" value="@Doc.Id">
+    <input type="hidden" id="DClaimNo" value="@Doc.InvoiceNo">
+    <input type="hidden" id="IT" value="@Doc.ItemType.Id">
+    <input type="hidden" id="DT" value="@Doc.DocumentType.Id">
+    <input type="hidden" id="BasePath" value="@BasePath">
+
+
+
+    <div class="row">
+        <div class="col-md-8">
+            <div id="FileView">
+                @Html.Partial("_ViewDocumentBox")
+            </div>
+        </div>
+
+        <div class="col-md-4 DetailBox" style="margin-top:50px;">
+            @*<div class="row">
+                    <a class="BackButton font-weight-bold" href="javascript:;" style="font-size:20px;text-decoration:underline;margin-top:-25px;cursor:pointer;color:black;">BACK</a>
+                </div>*@
+            <br>
+
+            <div class="row">
+                @if (Access.AccessGroup != null)
+                {
+                    <div class="col-md-6">
+                        @if (Access.AccessGroup.CanDownload)
+                        {
+                            <a class="btn-action DownloadDoc" href="@Url.Action("DownloadFile", "Document", new { DocPath = Doc.DocPath, DocId = Doc.Id })" title="Download File" alt="Download File"><i class="fa fa-download"></i></a>
+                        }
+                        @if (Access.AccessGroup.CanEmail)
+                        {
+                            <a class="btn-action EmailDoc" data-docpath="@Doc.DocPath" data-docid="@Doc.Id" href="javascript:;" title="Send Email" alt="Send Email" data-toggle="modal" data-target="#SendEmailModal"><i class="fa fa-share"></i></a>
+                        }
+                        @if (Access.AccessGroup.CanPrint)
+                        {
+                            if (Doc.Extension.Contains("png") || Doc.Extension.Contains("jpg") || Doc.Extension.Contains("jpeg"))
+                            {
+                                <a class="btn-action PrintDoc" data-docpath="@Doc.DocPath" data-docid="@Doc.Id" href="javascript:;" title="Print" alt="Print"><i class="fa fa-print"></i></a>
+                            }
+                        }
+
+                    </div>
+                    if (SearchUserApprove)
+                    {
+                        if (Doc.IsApproved == true)
+                        {
+                            <div class="col-md-3 ">
+                                <button id="btnApprove" class="btn btn-primary btn-md" style="width:120px;margin-top:-2px;">Approve</button>
+                            </div>
+                        }
+
+                    }
+                    else
+                    {
+                        <div class="col-md-3 ">
+                        </div>
+                    }
+
+                    <div class="col-md-3 ">
+                        @if (Access.AccessGroup.CanAddNote)
+                        {
+                            <a class="OpenNoteDoc" href="javascript:;" data-docid="@Doc.Id" title="Add Note" alt="Add Note" data-toggle="modal" data-target="#AddNoteModal">
+                                <i class="fa fa-comments-o" aria-hidden="true"></i>
+                                @if (DocNoteCount > 0)
+                                {
+                                    <span class="badge noteAddedCount badge-warning">@DocNoteCount</span>
+                                }
+                            </a>
+                        }
+                    </div>
+                }
+
+            </div>
+
+
+
+
+            <br>
+            <div class="row">
+
+                <br>
+                <br>
+
+
+
+
+                <div class="col-md-12">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <label class="DocDetailLabel">VesselNo</label>
+                        </div>
+                        <div class="col-md-9">
+                            <input type="text" class="form-control DocDetailText ClaimNo" value="@Doc.InvoiceNo" disabled>
+                        </div>
+                    </div>
+                </div>
+
+
+                @*<div class="col-md-12">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <label class="DocDetailLabel">CommodityNo</label>
+                        </div>
+                        <div class="col-md-9">
+                            <input type="text" class="form-control DocDetailText PolicyNo" value="@Doc.PolicyNo" disabled>
+                        </div>
+                    </div>
+                </div>*@
+
+                @if (Doc.InvoiceDate != null)
+                {
+                    <div class="col-md-12">
+                        <div class="row">
+                            <div class="col-md-3">
+                                <label class="DocDetailLabel">Invoice Date</label>
+                            </div>
+                            <div class="col-md-9">
+                                <input type="text" class="form-control DocDetailText Year" value="@Doc.InvoiceDate" disabled>
+                            </div>
+                        </div>
+                    </div>
+                }
+
+                <div class="col-md-12">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <label class="DocDetailLabel">Pharmacy</label>
+                        </div>
+                        <div class="col-md-9">
+                            <input type="text" class="form-control ItemType DocDetailText" value="@Doc.ItemType.Name" disabled>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-12">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <label class="DocDetailLabel">Branch</label>
+                        </div>
+                        <div class="col-md-9">
+                            <input type="text" class="form-control DocumentType DocDetailText" value="@Doc.DocumentType.Name" disabled>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-12">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <label class="DocDetailLabel">Added By</label>
+                        </div>
+                        <div class="col-md-9">
+                            <input type="text" class="form-control AddedBy DocDetailText" value="@Doc.AddedBy" disabled>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-12">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <label class="DocDetailLabel">Time</label>
+                        </div>
+                        <div class="col-md-9">
+                            <input type="text" class="form-control UploadedTime DocDetailText" value="@Doc.AddedTime" disabled>
+                        </div>
+                    </div>
+                </div>
+
+                @if (Doc.EmailAttachment != null)
+                {
+                    <div class="col-md-12">
+                        <div class="row">
+                            <div class="col-md-3">
+                                <label class="DocDetailLabel">Email</label>
+                            </div>
+                            <div class="col-md-9">
+                                <button class="form-control btn btn-outline-info EmailBodyViewer DocDetailText font-weight-bold"  data-toggle="modal" data-target="#ViewEmailDetail">View Email</button>
+                            </div>
+                        </div>
+                    </div>
+                }
+
+            </div>
+        </div>
+        
+    </div>
+
+    <input type="hidden" id="SelectedEmailAttachmentPath" value="">
+    <input type="hidden" id="SelectedDocumentId" value="">
+}
+
+<div class="modal fade" id="AddNoteModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-primary" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Add Note</h4>
+                <button class="close closeModal" type="button" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <textarea class="form-control" id="NoteText" placeholder="Add Note To Document..." rows="2"></textarea>
+                    <div class="PreviousNotes" style="display:none;"></div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary AddDocNote" data-dismiss="modal" style="display:none;">Add</button>
+                <button class="btn btn-warning closeModal" type="button" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+    <!-- /.modal-content-->
+</div>
+
+<div class="modal fade" id="SendEmailModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-primary" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Send Email</h4>
+                <button class="close closeModal" type="button" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <input type="text" class="form-control" id="ToEmail" name="ToEmail" data-emailrecipients="" placeholder="Enter Recipients Semicolon(;) Seperated..." required autocomplete="off">
+                    <div class="SearchList" style="display:none;">
+
+                    </div>
+                    <div class="Availibility col-md-12">
+                        <p style="color:red; display:none;">
+
+                        </p>
+                    </div>
+                    <input type="text" class="form-control" id="BccEmail" name="BccEmail" placeholder="Enter Bcc Recipients Semicolon(;) Seperated..." autocomplete="off">
+                    <div class="BccSearchList" style="display:none;">
+
+                    </div>
+                    <div class="BccAvailibility col-md-12">
+                        <p style="color:red; display:none;">
+
+                        </p>
+
+                    </div>
+                    <textarea class="form-control" id="EmailHeader" placeholder="Enter Email Subject..." rows="1"></textarea>
+                    <textarea class="form-control" id="EmailBody" placeholder="Enter Email Body..." rows="3"></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary SendEmail" style="display:none;">Send</button>
+                <button class="btn btn-warning closeModal" type="button" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+    <!-- /.modal-content-->
+</div>
+
+
+
+<div class="modal fade" id="ViewEmailDetail" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-info" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Email Detail</h4>
+                <button class="close closeModal" type="button" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="font-weight-bold">Email From</label>
+                    <input type="text" class="form-control btn-brand" id="AttachmentRecipients" disabled style="margin-bottom:10px;">
+                    <label class="font-weight-bold">Email Subject</label>
+                    <input type="text" class="form-control btn-brand" id="AttachmentSubject" disabled style="margin-bottom:10px;">
+                    <label class="font-weight-bold">Email Message</label>
+                    <textarea class="form-control" id="AttachmentEmailBody" rows="10" disabled></textarea>
+                </div>
+                </div>
+            <div class="modal-footer">
+                <button class="btn btn-warning closeModal" type="button" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+    <!-- /.modal-content-->
+</div>
+
+
+@section Scripts {
+    <script src="~/Scripts/tiff.min.js"></script>
+    <script src="~/Scripts/Helper.js"></script>
+    <script src="~/Scripts/printThis.js"></script>
+    <script>
+
+    $(document).ready(function () {
+
+        var DId = $("#DId").val();
+
+        $.ajax({
+            url: '@Url.Action("DocumentViewSelected","Document")',
+            data: { DocId: DId},
+            cache: false,
+            type: "POST",
+            dataType: "html",
+            beforeSend: function () {
+                $("#cover-spin").show();
+            },
+            success: function (data) {
+                if(data != "")
+                    $("#FileView").html(data.trim());
+                if ($(".anchor").find(".TiffImage").length > 0) {
+                    Tiff.initialize({ TOTAL_MEMORY: 1000000000 });
+                    var path = $(".TiffImage").data("path");
+                    var xhr = new XMLHttpRequest();
+                    xhr.responseType = 'arraybuffer';
+                    xhr.open('GET', path);
+                    xhr.onload = function (e) {
+                        var tiff = new Tiff({ buffer: xhr.response });
+                        for (var i = 0, len = tiff.countDirectory(); i < len; ++i) {
+                            tiff.setDirectory(i);
+                            var canvas = tiff.toCanvas();
+                            $('.TiffImage').append(canvas);
+                        }
+                    };
+                    xhr.send();
+                }
+               setTimeout(function () { $("#cover-spin").hide(); }, 2000);
+            }
+        });
+
+        $('#ToEmail').keyup(function () {
+        if ($(this).val().length > 0)
+            $(".SendEmail").fadeIn();
+        else
+            $(".SendEmail").hide();
+        })
+
+        $(document).on("click", ".EmailDoc", function () {
+            $("#SelectedEmailAttachmentPath").val($(this).data("docpath"));
+            $("#SelectedDocumentId").val($(this).data("docid"));
+        })
+
+         $("#ToEmail").on("keyup", function () {
+                $(".Availibility p").hide();
+                $(".SearchList a").remove();
+                $(".SearchList").hide();
+                var search = $(this).val();
+             if (search.includes(";"))
+                 search = search.substring(search.lastIndexOf(";") + 1);
+
+                $.ajax({
+                    type: 'POST',
+                    url: '@Url.Action("SearchEmail","Document")',
+                    data: { Val: search },
+                    success: function (data) {
+                        if (data.length > 0) {
+                            $(".Availibility p").hide();
+                            var html = "";
+                            for (var i = 0; i < data.length; i++) {
+                                html += "<a class='text-left' data-emailid='" + data[i].Id + "' data-recipient='" + data[i].Recipients + "' onclick='SelectedEmail(this)'>" + data[i].Recipients + "</a>";
+                            }
+                            $(".SearchList").append(html);
+                            $(".SearchList").show();
+                        } else
+                            $(".SearchList").hide();
+                    }
+                });
+         });
+
+         $("#BccEmail").on("keyup", function () {
+                $(".BccAvailibility p").hide();
+                $(".BccSearchList a").remove();
+                $(".BccSearchList").hide();
+             var search = $(this).val();
+              if (search.includes(";"))
+                 search = search.substring(search.lastIndexOf(";") + 1);
+
+                $.ajax({
+                    type: 'POST',
+                    url: '@Url.Action("SearchEmail","Document")',
+                    data: { Val: search },
+                    success: function (data) {
+                        if (data.length > 0) {
+                            $(".BccAvailibility p").hide();
+                            var html = "";
+                            for (var i = 0; i < data.length; i++) {
+                                html += "<a class='text-left' data-emailid='" + data[i].Id + "' data-recipient='" + data[i].Recipients + "' onclick='SelectedBccEmail(this)'>" + data[i].Recipients + "</a>";
+                            }
+                            $(".BccSearchList").append(html);
+                            $(".BccSearchList").show();
+                        } else
+                            $(".SearchList").hide();
+                    }
+                });
+            });
+
+        $(document).on("click", ".SendEmail", function () {
+            var NoIssue = true;
+                var Detail = {
+                     Recipients : $("#ToEmail").val(),
+                     BccRecipients : $("#BccEmail").val(),
+                     Header : $("#EmailHeader").val(),
+                     Body : $("#EmailBody").val(),
+                     DocId :  parseInt($("#SelectedDocumentId").val()),
+                     DocPath: $("#SelectedEmailAttachmentPath").val(),
+                     BasePath :  $("#BasePath").val()
+                };
+            if (Detail.Recipients != "") {
+            if (EmailChecker(Detail.Recipients)) {
+              if (Detail.Header != "") {
+                    if (Detail.BccRecipients != "") {
+                       NoIssue =  EmailChecker(Detail.BccRecipients)
+                    }
+                    if (NoIssue) {
+                        $.ajax({
+                                type: 'POST',
+                                url: '@Url.Action("SendEmail","Document")',
+                                data: Detail,
+                                beforeSend: function () {
+                                    $("#cover-spin").show();
+                                },
+                                complete: function () {
+                                    setTimeout(function () { $("#cover-spin").hide(); }, 1000);
+                                },
+                                success: function (data) {
+                                    if (data == false) {
+                                        alert("Something Wrong Try Again!")
+                                    } else {
+                                        Swal.fire({
+                                            title: 'Email Sent Successfully!',
+                                            timer: 1000,
+                                            type:'success',
+                                            showCancelButton: false,
+                                            showConfirmButton: false
+                                        })
+                                        $("#SendEmailModal").modal("hide");
+                                        $("#ToEmail").val("");
+                                        $("#BccEmail").val("");
+                                        $("#EmailHeader").val("");
+                                        $("#EmailBody").val("");
+                                    }
+                                }
+                            })
+                    } else {
+                            alert("Please Enter Valid Email Format In Bcc Recipients")
+                            $("#BccEmail").focus()
+                            $("#BccEmail").css('border', '1px solid red');
+                            $('#SendEmailModal').modal({ backdrop: 'static' })
+                        }
+              } else {
+                    alert("Please Enter Email Subject")
+                        $("#EmailHeader").focus()
+                        $("#EmailHeader").css('border', '1px solid red');
+                        $('#SendEmailModal').modal({ backdrop: 'static' })
+
+                    }
+                } else {
+                        alert("Please Enter Valid Email Format In Recipients")
+                        $("#ToEmail").focus()
+                        $("#ToEmail").css('border', '1px solid red');
+                        $('#SendEmailModal').modal({ backdrop: 'static' })
+
+                }
+            } else {
+                alert("Please Enter an Email Recipient");
+                $("#ToEmail").focus()
+                $("#ToEmail").css('border', '1px solid red');
+                $('#SendEmailModal').modal({ backdrop: 'static' })
+            }
+        })
+
+
+
+
+        $('#NoteText').keyup(function () {
+                if ($(this).val().length > 0)
+                    $(".AddDocNote").fadeIn();
+                else
+                    $(".AddDocNote").hide();
+            })
+
+        $(document).on("click", ".OpenNoteDoc", function () {
+            var Id = parseInt($("#DId").val());
+                var Notes = "";
+                $.ajax({
+                    type: 'POST',
+                    url: '@Url.Action("DocumentPreviousNote","Document")',
+                    data: { DocId: Id },
+                    beforeSend: function () {
+                        $("#cover-spin").show();
+                    },
+                    complete: function () {
+                        setTimeout(function () { $("#cover-spin").hide(); }, 1000);
+                    },
+                    success: function (data) {
+                        if (data != null) {
+                            if (data.length > 0) {
+                                Notes = "<br><div class='card' style='width:100%; font-size:12.5px;padding:5px;'><div class='card-header text-center' style='padding:.25rem 0.25rem;'>Previous Notes</div>"
+                                        + "<div class='card-body NotesCardBody' style='padding:0.25rem;'>"
+                                        + "<table class='table'>"
+                                        + "<thead>"
+                                        + "<tr>"
+                                        + "<th class='text-center'>Note</th>"
+                                        + "<th class='text-center'>Added By</th>"
+                                        + "<th class='text-center'>Added Time</th>"
+                                        + "</tr>"
+                                        + "</thead>"
+                                        + "<tbody class='DocNoteData'>";
+                                $.each(data, function (index, value) {
+                                    var date = new Date(parseInt(data[index].AddedTime.substr(6)));
+                                    Notes += "<tr class='NoteRow'>"
+                                        + "<td class='text-center'>" + data[index].UserNote + "</td>"
+                                        + "<td class='text-center'>" + data[index].UserEmail + "</td>"
+                                        + "<td class='text-center'>" + getDateFormatted(date) + "</td>"
+                                         +  "</tr>";
+                                    })
+                                    Notes += "</tbody>"
+                                        + "</table>"
+                                    + "</div>"
+                                    + "</div>";
+                                $(".PreviousNotes").html("");
+                                $(".PreviousNotes").html(Notes);
+                                $(".PreviousNotes").show(Notes);
+
+                                if ($(".DocNoteData").find(".NoteRow").length > 4)
+                                       $(".NotesCardBody").addClass("NotesScroller")
+                                    else
+                                       $(".NotesCardBody").removeClass("NotesScroller")
+                            } else {
+                                $(".PreviousNotes").hide();
+                            }
+                        } else {
+                             $(".PreviousNotes").hide();
+                        }
+                    }
+                })
+            })
+
+        $(document).on("click", ".AddDocNote", function () {
+            var Id = parseInt($("#DId").val());
+            var note = $("#NoteText").val();
+            if (note != "") {
+                $.ajax({
+                    type: 'POST',
+                    url: '@Url.Action("AddNote","Document")',
+                    data: { DocId: Id, Note: note },
+                    beforeSend: function () {
+                        $("#cover-spin").show();
+                    },
+                    complete: function () {
+                        setTimeout(function () { $("#cover-spin").hide(); }, 1000);
+                    },
+                    success: function (data) {
+                        if (data == false) {
+                            alert("Something Wrong Try Again!")
+                        } else {
+                            $("#NoteText").val("");
+                            Swal.fire({
+                                title: 'Note Added!',
+                                timer: 1000,
+                                type:'success',
+                                showCancelButton: false,
+                                showConfirmButton: false
+                            })
+                        }
+                    }
+                })
+            } else {
+                $("#NoteText").focus()
+                $("#NoteText").css('border', '1px solid red');
+                return false;
+            }
+        })
+
+
+            $(document).on("click", ".EmailBodyViewer", function () {
+            var Id = parseInt($("#DId").val());
+                $.ajax({
+                    type: 'POST',
+                    url: '@Url.Action("ShowAttachmentEmail","Document")',
+                    data: { DId: Id },
+                    beforeSend: function () {
+                        $("#cover-spin").show();
+                    },
+                    complete: function () {
+                        setTimeout(function () { $("#cover-spin").hide(); }, 1000);
+                    },
+                    success: function (data) {
+                        if (data != null) {
+                            $("#AttachmentRecipients").val(data.EmailAttachment.Recipients);
+                            $("#AttachmentSubject").val(data.EmailAttachment.Header);
+                            $("#AttachmentEmailBody").val(data.EmailAttachment.Body);
+                        } else
+                            alert("Something Went Wrong!")                                              
+                    }
+                })
+            })
+
+
+
+        $("#SingleFile").change(function () {
+                var fileUpload = $("#SingleFile").get(0);
+                var files = fileUpload.files;
+                var fileData = new FormData();
+                for (var i = 0; i < files.length; i++) {
+                    fileData.append(files[i].name, files[i]);
+                }
+                fileData.append('SingleFile', 'File');
+                $(this).data("singlefileupload", fileData);
+
+                if ($("#SingleFile").data("singlefileupload") != "") {
+                    $(".SingleFileUpload").fadeIn();
+                    var SingleFile = $("#SingleFile").data("singlefileupload");
+                    $.ajax({
+                        type: 'POST',
+                        url: '@Url.Action("FileTempUpload","Document")',
+                        processData: false,
+                        contentType: false,
+                        data: SingleFile,
+                        beforeSend: function () {
+                            $("#cover-spin").show();
+                        },
+                        success: function (data) {
+                            if (data != null) {
+                                $(".NoFileChoosen").hide();
+                                $("#FileView").html("");
+                                $("#FileView").html(data.trim());
+                                if ($(".anchor").find(".TiffImage").length > 0) {
+                                       Tiff.initialize({TOTAL_MEMORY: 100000000});
+                                    var path = $(".TiffImage").data("path");
+                                    var xhr = new XMLHttpRequest();
+                                    xhr.responseType = 'arraybuffer';
+                                    xhr.open('GET', path);
+                                    xhr.onload = function (e) {
+                                        var tiff = new Tiff({ buffer: xhr.response });
+                                         for (var i = 0, len = tiff.countDirectory(); i < len; ++i) {
+                                              tiff.setDirectory(i);
+                                              var canvas = tiff.toCanvas();
+                                              $('.TiffImage').append(canvas);
+                                        }
+                                    }
+                                    xhr.send();
+                                }
+                            } else {
+                                $(".SingleFileUpload").hide();
+                                $(".NoFileChoosen").fadeIn();
+                            }
+                            setTimeout(function () { $("#cover-spin").hide(); }, 2000);
+                        }
+
+                    })
+                }
+            })
+
+
+        $(".PrintDoc").click(function () {
+            if ($('body').find(".PdfViewer").length > 0)
+                $(".PdfViewer > object > embed").printThis();
+            else if($('body').find(".TiffImage").length > 0)
+                $(".TiffImage").printThis({ canvas : true });
+
+           else
+                $(".ImageViewer").printThis();
+        });
+
+    })
+
+    function SelectedEmail(obj) {
+        if ($("#ToEmail").val().includes(";")) {
+            $("#ToEmail").val($("#ToEmail").val().substring(0, $("#ToEmail").val().lastIndexOf(";")+1));
+            $("#ToEmail").val($("#ToEmail").val()+$(obj).data("recipient")+";");
+        }
+        else
+            $("#ToEmail").val($(obj).data("recipient")+";");
+            $(".SearchList").hide();
+    }
+
+    function SelectedBccEmail(obj) {
+        if ($("#BccEmail").val().includes(";")) {
+            $("#BccEmail").val($("#BccEmail").val().substring(0, $("#BccEmail").val().lastIndexOf(";")+1));
+            $("#BccEmail").val($("#BccEmail").val()+$(obj).data("recipient")+";");
+        }
+        else
+            $("#BccEmail").val($(obj).data("recipient")+";");
+            $(".BccSearchList").hide();
+        }
+
+
+         function getDateFormatted(date) {
+                date = String(date);
+                date = date.split(" ");
+                return date[0] + " " + date[1] + " " + date[2] + " " + date[3] + " " + date[4];
+        }
+
+        //Below is the button ajax call for Approving the record
+
+        $(document).on("click", "#btnApprove", function () {
+            debugger;
+            var documentID = parseInt($("#DId").val());
+                
+
+                $.ajax({
+                        type: 'POST',
+                        url: '@Url.Action("ApproveDocumentByDocumentID", "BulkUpload")',
+                    data: { documentID: documentID},
+                        beforeSend: function () {
+                            $("#cover-spin").show();
+                        },
+                        complete: function () {
+                            setTimeout(function () { $("#cover-spin").hide(); }, 1000);
+                        },
+                    success: function (data) {
+                            setTimeout(function () { $("#cover-spin").hide(); }, 1000);
+                            if (data == null) {
+                                alert("Something Wrong Try Again!")
+                            } else {
+                                alert("Document record has been approved!");
+                                
+                            }
+                        }
+                    }) 
+            });
+
+    </script>
+
+}

@@ -1,0 +1,12 @@
+﻿@model Search_n_View.ViewModels.MCViewModel
+<div class="form-group row">
+    <label class="col-md-3 col-form-label font-weight-bold">Checkers</label>
+    <span style="color: #f86c6b;font-weight:bold;font-size:20px;">*</span>
+    <div class="col-md-8">
+        @Html.DropDownListFor(model => model.CheckerId, Model.Checkers, htmlAttributes: new { @class = "form-control selectpicker CheckersList select2-search__field2", @title = "Select Checker",   @multiple = "multiple", data_live_search = "true", tabindex = 9 })
+    </div>
+</div>
+
+<script>
+    $('.selectpicker').selectpicker();
+</script>

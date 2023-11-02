@@ -1,0 +1,53 @@
+﻿@using Microsoft.AspNet.Identity
+@{
+    var UserName = string.Empty;
+    if (string.IsNullOrEmpty(Convert.ToString(Session["UserName"])))
+    {
+        UserName = @User.Identity.GetUserName();
+    }
+    else
+    {
+        UserName = Session["UserName"].ToString();
+    }
+}
+
+@if (Request.IsAuthenticated)
+{
+    using (Html.BeginForm("LogOff", "User", FormMethod.Post, new { Id = "logoutForm", @class = "navbar-right" }))
+    {
+        @Html.AntiForgeryToken()
+    <nav class="navbar navbar-expand-lg">
+
+        <ul class="nav navbar-nav ml-auto">
+            <li class="nav-item dropdown" style="width:170px;">
+                <a class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown">
+                    <div class="tool-divIder"></div>
+                    <div><i class="nav-icon fa fa-user"></i>   Hi, @UserName</div>
+                </a>
+                <div class="dropdown-menu dropdown-menu-right" style="padding:10px 5px;background-color:#fff;border-right: 1px solid gray; border-left: 1px solid gray;border-bottom: 1px solid gray;">
+                    <a class="nav-link" href="@Url.Action("ResetPassword","User")" style="cursor:pointer">
+                        <i class="nav-icon fa fa-key"></i>Change Password
+                    </a>
+                    <div class="dropdown-divider"></div>
+                    <a class="nav-link ClearLocalStorage" id="LogOut" href="javascript:document.getElementById('logoutForm').submit()">
+                        <i class="nav-icon fa fa-sign-out"></i>Logout
+                    </a>
+                </div>
+            </li>
+        </ul>
+    </nav>
+
+    }
+    <style>
+        #hs-nav-v4 #navbar .tool-divIder {
+            wIdth: 0;
+            border-left: 1px solId #516f90;
+            height: 30px;
+            margin: 13px 10px 14px;
+        }
+    </style>
+}
+else
+{
+    Response.Redirect(Url.Action("Login", "User"));
+}

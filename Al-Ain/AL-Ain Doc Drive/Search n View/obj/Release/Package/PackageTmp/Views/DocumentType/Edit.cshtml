@@ -1,0 +1,52 @@
+﻿@model Search_n_View.ViewModels.EditDocumentTypeIdViewModel
+@{
+    ViewBag.Title = "Edit Branch";
+}
+
+<div>
+    <div class="animated fadeIn">
+        <div class="row">
+            <div class="col-sm-3"></div>
+            <div class="col-sm-6">
+                @using (Html.BeginForm("Edit", "DocumentType", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+                {
+                    <div class="card">
+                        <div class="card-header">
+                            <h5>@ViewBag.Title</h5>
+                        </div>
+                        <div class="card-body">
+                            @Html.AntiForgeryToken()
+                            @Html.ValidationSummary("", new { @class = "text-danger" })
+                            <div class="form-group row">
+                                @Html.LabelFor(m => m.Name, new { @class = "col-md-3 col-form-label font-weight-bold" })
+                                <span style="color: #f86c6b;font-weight:bold;font-size:20px;">*</span>
+                                <div class="col-md-8">
+                                    @Html.HiddenFor(m => m.Id, new { @class = "form-control" })
+                                    @Html.TextBoxFor(m => m.Name, new { @class = "form-control", })
+                                </div>
+                            </div>
+                            <div class="form-group row">
+
+                                <label class="col-md-3 col-form-label font-weight-bold">Select Pharmacy</label>
+                                <span style="color: #f86c6b;font-weight:bold;font-size:20px;">*</span>
+                                <div class="col-md-8">
+                                    @Html.DropDownList("ItId", null, htmlAttributes: new { @class = "form-control ItemTypeList", @title = "Select DepartmentList", tabindex = 2 })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <button class="btn btn-md btn-primary mr-3" type="submit">
+                                <i class="fa fa-dot-circle-o"></i> Save
+                            </button>
+                            <a class="btn btn-md btn-primary ml-3" href="@Url.Action("Index", "DocumentType")">
+                                <i class="fa fa-close"></i> Cancel
+                            </a>
+                        </div>
+                    </div>
+                }
+
+            </div>
+        </div>
+    </div>
+</div>
+

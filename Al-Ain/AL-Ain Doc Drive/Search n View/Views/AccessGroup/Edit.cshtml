@@ -1,0 +1,79 @@
+﻿@model Search_n_View.ViewModels.EditAccessGroupViewModel
+@{
+    ViewBag.Title = "Edit Access Rights";
+}
+<div>
+    <div class="animated fadeIn">
+        <div class="row">
+            <div class="col-sm-1"></div>
+            <div class="col-sm-10">
+                @using (Html.BeginForm("Edit", "AccessGroup", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+                {
+                    <div class="card">
+                        <div class="card-header">
+                            <h5>@ViewBag.Title</h5>
+                        </div>
+                        <div class="card-body">
+                            @Html.AntiForgeryToken()
+                            @Html.ValidationSummary("", new { @class = "text-danger" })
+                            <div class="form-group row">
+                                @Html.LabelFor(m => m.Name, new { @class = "col-md-2 col-form-label font-weight-bold" })
+                                <span style="color: #f86c6b;font-weight:bold;font-size:20px;">*</span>
+                                <div class="col-md-9">
+                                    @Html.HiddenFor(m => m.Id, new { @class = "form-control" })
+                                    @Html.TextBoxFor(m => m.Name, new { @class = "form-control" ,tabindex = 1})
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                @Html.LabelFor(m => m.AgShortName, new { @class = "col-md-2 col-form-label font-weight-bold" })
+                                <span style="color: #f86c6b;font-weight:bold;font-size:20px;">*</span>
+                                <div class="col-md-9">
+                                    @Html.TextBoxFor(m => m.AgShortName, new { @class = "form-control", disabled = "disabled" })
+                                </div>
+                            </div>
+
+                        
+                            <div class="form-group row">
+                                <label class="col-md-2 col-form-label font-weight-bold">Access</label>
+                                <div class="col-md-10">
+                                    <div class="row" style="margin-top:5px;">
+                                        <div class="col-md-2">
+                                            <label style="font-size:11px;" name="CanView">View @Html.CheckBoxFor(model => model.CanView, new { tabindex = 2 })</label>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <label style="font-size:11px;" name="Upload">Upload @Html.CheckBoxFor(model => model.CanUpload, new { tabindex = 3 })</label>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <label style="font-size:11px;" name="CanDownload">Download @Html.CheckBoxFor(model => model.CanDownload, new { tabindex = 4 })</label>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <label style="font-size:11px;" name="CanEmail">Email @Html.CheckBoxFor(model => model.CanEmail, new { tabindex = 5 })</label>
+                                        </div>
+                                        @*<div class="col-md-2">
+                                            <label style="font-size:11px;" name="CanPrint">Print @Html.CheckBoxFor(model => model.CanPrint, new { tabindex = 6 })</label>
+                                        </div>*@
+                                        <div class="col-md-2">
+                                            <label style="font-size:11px;" name="CanAddNote">AddNote @Html.CheckBoxFor(model => model.CanAddNote, new { tabindex = 7 })</label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                        </div>
+                        <div class="card-footer">
+                            <button class="btn btn-md btn-primary mr-3" type="submit" tabindex = "8">
+                                <i class="fa fa-dot-circle-o"></i> Save
+                            </button>
+                            <a class="btn btn-md btn-primary ml-3" href="@Url.Action("Index", "AccessGroup")" tabindex = "9">
+                                <i class="fa fa-close"></i> Cancel
+                            </a>
+                        </div>
+                    </div>
+                }
+
+            </div>
+        </div>
+    </div>
+</div>
+

@@ -1,0 +1,224 @@
+﻿@model Search_n_View.ViewModels.ManageUserViewModel
+@{
+    ViewBag.Title = "Manage User";
+}
+
+@section styles {
+    <style>
+        td .btn-primary, .btn-danger {
+            padding: .175rem .55rem;
+        }
+
+        table {
+            table-layout: fixed;
+            font-size: 13px;
+        }
+    </style>
+}
+
+<div>
+    <div class="animated fadeIn">
+        <div class="card">
+            <div class="card-header">
+                <i class="fa fa-users"></i> Users
+                <div class="card-header-actions">
+                    <a class="btn btn-info" href="@Url.Action("CreateUser", "User")">
+                        <i class="fa fa-user-plus"></i> Add User
+                    </a>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-striped  datatable">
+                        <thead>
+                            <tr>
+                                <th class="text-center">User</th>
+                                <th class="text-center">Email</th>
+                                <th class="text-center">Role</th>
+                                <th class="text-center">AccessRight</th>
+                                <th class="text-center">Departments</th>
+                                <th class="text-center">ItemTypes</th>
+                                <th class="text-center">AddedBy</th>
+                                <th class="text-center">Date</th>
+                                <th class="no-sort text-center">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                            @for (int i = 0; i < Model.Users.Count(); i++)
+                            {
+                                <tr>
+                                    <td class="text-center">@Model.Users[i].UserName</td>
+                                    <td class="text-center">@Model.Users[i].Email</td>
+                                    <td class="text-center">@Model.Users[i].Role</td>
+                                    <td class="text-center">@Model.Users[i].AccessGroupName</td>
+                                    <td class="text-center">
+                                        <a class="btn btn-secondary ViewDepartments" data-userid="@Model.Users[i].Id" title="View Department" data-toggle="modal" data-target="#DepartmentDetailModal" href="javascript:;">
+                                            View
+                                        </a>
+                                    </td>
+                                    <td class="text-center">
+                                        <a class="btn btn-secondary ViewItemTypes" data-userid="@Model.Users[i].Id" title="View ItemType" data-toggle="modal" data-target="#ItemTypeDetailModal" href="javascript:;">
+                                            View
+                                        </a>
+                                    </td>
+
+                                    <td class="text-center">@Model.Users[i].AddedBy</td>
+                                    <td class="text-center">@Model.Users[i].AddedTime.ToString("dd MMM yyyy HH:mm")</td>
+
+                                    <td class="text-center">
+                                        <a class="btn btn-primary" title="Edit" href="@Url.Action("EditUser", "User", new { Username = Model.Users[i].UserName })">
+                                            <i class="fa fa-edit"></i>
+                                        </a>
+
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<div class="modal fade" id="DepartmentDetailModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-md modal-primary" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Associated Departments</h4>
+                <button class="close closeModal" type="button" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th class="text-center">Name</th>
+                                </tr>
+                            </thead>
+                            <tbody id="DepartmentDetailRows"></tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-warning closeModal" type="button" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+        <!-- /.modal-content-->
+    </div>
+</div>
+
+
+<div class="modal fade" id="ItemTypeDetailModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-md modal-primary" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Associated ItemTypes</h4>
+                <button class="close closeModal" type="button" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th class="text-center">Name</th>
+                                </tr>
+                            </thead>
+                            <tbody id="ItemTypeDetailRows"></tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-warning closeModal" type="button" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+        <!-- /.modal-content-->
+    </div>
+</div>
+
+
+
+
+
+@section scripts
+{
+    <script type="text/javascript">
+
+    $(document).ready(function () {
+
+            $(document).on("click", ".ViewItemTypes", function () {
+               var UId = $(this).data('userid');
+               var html = "";
+                $.ajax({
+                    type: 'POST',
+                    url: '@Url.Action("GetUserItemTypes","User")',
+                    beforeSend: function () {
+                        $("#cover-spin").show();
+                    },
+                      data: { UserId: UId },
+                    complete: function () {
+                        setTimeout(function () { $("#cover-spin").hide(); }, 1000);
+                    },
+                    success: function (data) {
+                        if (data != null && data.length > 0) {
+                            $.each(data, function (index) {
+                                if (data[index].Name != "All") {
+                                    html += "<tr>"
+                                    html += "<td class='text-center'>" + data[index].Name + "</td>"
+                                        + "</tr>";
+                                }
+                            })
+                            $("#ItemTypeDetailRows").html("");
+                            $("#ItemTypeDetailRows").html(html);
+                        }
+                    }
+                })
+            })
+
+            $(document).on("click", ".ViewDepartments", function () {
+               var UId = $(this).data('userid');
+               var html = "";
+                $.ajax({
+                    type: 'POST',
+                    url: '@Url.Action("GetUserDepartments","User")',
+                    beforeSend: function () {
+                        $("#cover-spin").show();
+                    },
+                      data: { UserId: UId },
+                    complete: function () {
+                        setTimeout(function () { $("#cover-spin").hide(); }, 1000);
+                    },
+                    success: function (data) {
+                        if (data != null && data.length > 0) {
+                            $.each(data, function (index) {
+                                if (data[index].Name != "All") {
+                                    html += "<tr>"
+                                    html += "<td class='text-center'>" + data[index].Name + "</td>"
+                                        + "</tr>";
+                                }
+                            })
+                            $("#DepartmentDetailRows").html("");
+                            $("#DepartmentDetailRows").html(html);
+                        }
+                    }
+                })
+            })
+
+
+    })
+
+
+    </script>
+}

@@ -1,0 +1,39 @@
+﻿@using Search_n_View.ViewModels;
+@{
+    ViewBag.Title = "Document Viewed Filtered";
+    List<UserDocument> DocViewers = ViewData["DocViewers"] as List<UserDocument>;
+
+}
+<div class="table-responsive">
+    <table class="table table-striped table-responsive-sm datatable">
+        <thead>
+            <tr>
+                @*<th class="text-center">VesselNo</th>*@
+                <th class="text-center">InvocieNo</th>
+                <th class="text-center">Pharmacy</th>
+                <th class="text-center">Branch</th>
+                <th class="text-center">ViewedBy</th>
+                <th class="text-center">ViewedTime</th>
+
+            </tr>
+        </thead>
+        <tbody class="AllDocViewersData">
+            @if (DocViewers != null)
+            {
+                for (int i = 0;i< DocViewers.Count();i++)
+                {
+                <tr>
+                    @*<td class="text-center">@DocViewers[i].ClaimNo</td>*@
+                    <td class="text-center">@DocViewers[i].PolicyNo</td>
+                    <td class="text-center">@DocViewers[i].ItemType </td>
+                    <td class="text-center">@DocViewers[i].DocumentType</td>
+                    <td class="text-center">@DocViewers[i].AddedBy</td>
+                    <td class="text-center">@DocViewers[i].AddedTime.ToString("dd/MM/yyyy hh:mm:ss")</td>
+                </tr>
+                }
+            }
+        </tbody>
+    </table>
+</div>
+
+

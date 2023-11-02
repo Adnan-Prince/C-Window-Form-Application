@@ -1,0 +1,135 @@
+﻿
+@{
+    ViewBag.Title = "Change password";
+    var SessionuserId = ViewBag.UserId;
+}
+
+<input type="hidden" id="SessionUserId" value="@SessionuserId">
+<div class="animated fadeIn">
+    <div class="row">
+        <div class="col-sm-3"></div>
+        <div class="col-sm-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5>@ViewBag.Title</h5>
+                </div>
+                <div class="card-body">
+                    <div class="form-group row" id="Error" style="display:none;">
+                        <ul><li style="color: #f86c6b;"></li></ul>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-md-2 col-form-label font-weight-bold">Current</label>
+                        <div class="col-md-10">
+                            <input type="password" class="form-control" id="CurrentPassword" name="CurrentPassword" required placeholder="Enter Current Password">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-md-2 col-form-label font-weight-bold">New</label>
+                        <div class="col-md-10">
+                            <input type="password" class="form-control" id="NewPassword" name="NewPassword" required placeholder="Enter New Password">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-md-2 col-form-label font-weight-bold">Confirm</label>
+                        <div class="col-md-10">
+                            <input type="password" class="form-control" id="ConfirmPassword" name="ConfirmPassword" required placeholder="Confrim New Password">
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <button class="btn btn-md btn-primary " id="UpdatePassword">
+                        <i class="fa fa-dot-circle-o"></i> Change
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts {
+
+    <script>
+    $(document).ready(function () {
+
+        $(document).on("click", "#UpdatePassword", function () {
+            var wrongCurrent = "Current Password Not Matched!";
+            var model = {
+                Id: $("#SessionUserId").val(),
+                CurrentPassword: $("#CurrentPassword").val(),
+                NewPassword: $("#NewPassword").val(),
+                ConfirmPassword : $("#ConfirmPassword").val()
+            };
+            if (model.CurrentPassword.length != 0) {
+                if (model.NewPassword.length != 0) {
+                    if (model.NewPassword.length >= 6) {
+                        if (model.NewPassword == model.ConfirmPassword) {
+                            $.ajax({
+                                type: 'POST',
+                                url: '@Url.Action("ResetPassword","User")',
+                                beforeSend: function () {
+                                    $("#cover-spin").show();
+                                },
+                                data: model,
+                                complete: function () {
+                                    setTimeout(function () { $("#cover-spin").hide(); }, 1000);
+                                },
+                                success: function (data) {
+                                    if (data != false) {
+                                        if (data == wrongCurrent) {
+                                              $("#CurrentPassword").focus();
+                                              $("#CurrentPassword").css("border", "1px solid red;");
+                                              $("#Error li").text(wrongCurrent);
+                                              $("#Error").show();
+                                            return false;
+                                        } else {
+                                            $("#Error").hide();
+                                            $("#Error li").text("");
+                                            Swal.fire({
+                                                title: 'Password Has Reset!',
+                                                timer: 2000,
+                                                showCancelButton: false,
+                                                showConfirmButton: false
+                                            })
+                                            setTimeout(function () { window.location = $('#LogOut').attr('href'); }, 1000);
+                                        }
+                                    }
+                                }
+                            })
+                        } else {
+                            $("#ConfirmPassword").focus();
+                            $("#ConfirmPassword").css("border", "1px solid red;");
+                            $("#Error li").text("Password Doesn't Match.");
+                            $("#Error").show();
+                            return false;
+                        }
+                    } else {
+                        $("#Error li").text("The Password must be at least 6 characters long.");
+                        $("#Error").show();
+                        return false;
+                    }
+                } else {
+                    $("#NewPassword").focus();
+                    $("#NewPassword").css("border", "1px solid red;");
+                    $("#Error li").text("Please Enter New Password.");
+                    $("#Error").show();
+                    return false;
+                }
+            } else {
+                   $("#CurrentPassword").focus();
+                    $("#CurrentPassword").css("border", "1px solid red;");
+                    $("#Error li").text("Please Enter Current Password.");
+                    $("#Error").show();
+                    return false;
+            }
+        })
+
+        $('body').keydown(function(event){
+            var keyCode = (event.keyCode ? event.keyCode : event.which);
+            if (keyCode == 13) {
+                $('#UpdatePassword').trigger('click');
+            }
+        });
+    })
+    </script>
+}

@@ -1,0 +1,1 @@
+$('.datatable').DataTable({ "paging": true, "info": true, "ordering": false, "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]], "language": { "emptyTable": "No Record Found" } }); $('.datatable').attr('style', 'border-collapse: collapse !important');

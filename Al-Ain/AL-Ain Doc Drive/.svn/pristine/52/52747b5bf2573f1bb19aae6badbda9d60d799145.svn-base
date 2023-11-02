@@ -1,0 +1,85 @@
+﻿@model Search_n_View.ViewModels.ManageProductViewModel
+@{
+    ViewBag.Title = "Manage Channel";
+}
+
+@section styles {
+    <style>
+        td .btn-primary, .btn-danger {
+            padding: .175rem .55rem;
+        }
+    </style>
+}
+<div>
+    <div class="animated fadeIn">
+        <div class="card">
+            <div class="card-header">
+                <i class="fa fa-list-alt"></i> Channels
+                <div class="card-header-actions">
+                    <a class="btn btn-info" href="@Url.Action("Create", "Product")">
+                        <i class="fa fa-plus"></i> Add Channel
+                    </a>
+                </div>
+            </div>
+            <div class="card-body">
+                <table class="table table-striped table-responsive-sm datatable">
+                    <thead>
+                        <tr>
+                            <th class="text-center">Name</th>
+                            <th class="text-center">Code</th>
+                            <th class="text-center">Added By</th>
+                            <th class="text-center">Added Date</th>
+                            <th class="no-sort text-center">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        @foreach (var Dept in Model.Product)
+                        {
+                        <tr>
+                            @if (Dept.Name != null)
+                            {
+                                <td class="text-center">@Dept.Name</td>
+                            }
+                            else
+                            {
+                                <td class="text-center">-</td>
+                            }
+
+                            @if (Dept.ShortName != null)
+                            {
+                                <td class="text-center">@Dept.ShortName</td>
+                            }
+                            else
+                            {
+                                <td class="text-center">-</td>
+                            }
+                            @if (Dept.CreatedBy != null)
+                            {
+                                <td class="text-center">@Dept.CreatedBy</td>
+                            }
+                            else
+                            {
+                                <td class="text-center">-</td>
+                            }
+                            @if (Dept.AddedTime != null)
+                            {
+                                <td class="text-center">@Dept.AddedTime.ToString("dd MMM yyyy HH:mm")</td>
+                            }
+                            else
+                            {
+                                <td class="text-center">-</td>
+                            }
+                            <td class="text-center">
+                                <a class="btn btn-primary" title="Edit" href="@Url.Action("Edit", "Product", new { Id = Dept.Id })">
+                                    <i class="fa fa-edit"></i>
+                                </a>
+                            </td>
+                        </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

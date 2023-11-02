@@ -1,0 +1,53 @@
+﻿@model Search_n_View.ViewModels.DepartmentViewModel
+@{
+    ViewBag.Title = "Create Department";
+    string message = Convert.ToString(ViewData["Message"]);
+}
+
+
+<div>
+    <div class="animated fadeIn">
+        <div class="row">
+            <div class="col-sm-3"></div>
+            <div class="col-sm-6">
+                @using (Html.BeginForm("Create", "Department", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+                {
+                    <div class="card">
+                        <div class="card-header">
+                            <h5>@ViewBag.Title</h5>
+                        </div>
+                        <div class="card-body">
+                            @Html.AntiForgeryToken()
+                            @Html.ValidationSummary("", new { @class = "text-danger" })
+
+                            @if (message != "")
+                            {
+                                <div class="form-group row">
+                                    <ul><li style="color: #f86c6b;">@message</li></ul>
+                                </div>
+                            }
+                        <div class="form-group row">
+                            @Html.LabelFor(m => m.Name, new { @class = "col-md-2 col-form-label font-weight-bold" })
+                            <span style="color: #f86c6b;font-weight:bold;font-size:20px;">*</span>
+                            <div class="col-md-9">
+                                @Html.TextBoxFor(m => m.Name, new { @class = "form-control", @placeholder = "Enter Name" , tabindex = 1})
+                            </div>
+
+                        </div>
+                      
+                        </div>
+                        <div class="card-footer">
+                            <button class="btn btn-md btn-primary mr-3" type="submit" , tabindex = "3">
+                                <i class="fa fa-dot-circle-o"></i> Create
+                            </button>
+                            <a class="btn btn-md btn-primary ml-3" href="@Url.Action("Index", "Department")" , tabindex = "4">
+                                <i class="fa fa-close"></i> Cancel
+                            </a>
+                        </div>
+                    </div>
+                }
+
+            </div>
+        </div>
+    </div>
+</div>

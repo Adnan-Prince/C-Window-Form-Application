@@ -1,0 +1,290 @@
+﻿
+@using Search_n_View.ViewModels;
+@{
+    ViewBag.Title = "Access History";
+    List<UserDocument> DocViewers = ViewData["DocViewers"] as List<UserDocument>;
+    var Users = ViewBag.Users;
+    var ItemTypeList = ViewBag.ItemTypeList;
+    var DocumentTypeList = ViewBag.DocumentTypeList;
+}
+
+@section styles {
+    <style>
+        td .btn-primary {
+            padding: .175rem .55rem;
+        }
+
+        #Users:focus {
+            outline: 3px solid #ddd;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #fff;
+            min-width: 289px;
+            overflow: auto;
+            z-index: 1;
+            border: 1px solid gray;
+        }
+
+        .dropdown a:hover {
+            background-color: #ddd;
+        }
+
+        .show {
+            display: block;
+        }
+
+        .dropdown-content a {
+            color: dimgray;
+            padding: 0px 10px;
+            text-decoration: none;
+            display: block;
+            background-color: #fff;
+            cursor: pointer;
+        }
+    </style>
+    <link href="~/Content/daterangepicker.min.css" rel="stylesheet" />
+}
+
+
+
+<div class="row col-md-12 ">
+    <h5>Viewed Documents</h5>
+</div>
+
+<div class="DocumentViewers">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card ">
+                <div class="card-header">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <input type="text" name="dates" class="form-control DocFilters DocFilterDate" placeholder="Date Range" />
+                                    <input type="hidden" class="DateSelected" value="0">
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="dropdown">
+                                        <input type="text" style="background-color:#fff;color: dimgray;" data-userid="" class="form-control" placeholder="Users" id="Users" onkeyup="filterFunction()" autocomplete="off">
+                                        <div id="myDropdown" class="dropdown-content">
+                                            @for (int i = 0; i < Users.Count; i++)
+                                            {
+                                                if (Users[i].UserName != null)
+                                                {
+                                                    <a class="UserName" data-userid="@Users[i].Id">@Users[i].UserName</a>
+                                                }
+
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <select class="form-control ItemTypeList">
+                                        <option value="0" data-shortname="0">Select ItemType</option>
+                                        @for (int i = 0; i < ItemTypeList.Count; i++)
+                                        {
+                                            if (ItemTypeList[i].Name != "All")
+                                            {
+                                                <option value="@ItemTypeList[i].Id">@ItemTypeList[i].Name</option>
+                                            }
+
+                                        }
+                                    </select>
+                                </div>
+                                <div class="col-md-3">
+                                    <select class="form-control DocumentTypeList">
+                                        <option value="0" >Select DocumentType</option>
+                                       
+                                        
+                                    </select>
+                                </div>
+
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <button id="FilterDocViewers" class="btn-primary" style="margin-top:10px;width:100%;">Filter</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body AllDocViewers">
+                    <div class="table-responsive">
+                        <table class="table table-striped datatable">
+                            <thead>
+                                <tr>
+                                    @*<th class="text-center">VesselNo</th>*@
+                                    <th class="text-center">InvocieNo</th>
+                                    <th class="text-center">Pharmacy</th>
+                                    <th class="text-center">Branch</th>
+                                    <th class="text-center">ViewedBy</th>
+                                    <th class="text-center">ViewedTime</th>
+
+                                </tr>
+                            </thead>
+                            <tbody class="AllDocViewersData">
+                                @if (DocViewers != null)
+                                {
+
+                                }
+                                else
+                                {
+                                    <tr>
+                                        <td class="text-center" colspan="6">No Record Foound</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/Scripts/moment.js"></script>
+    <script src="~/Scripts/daterangepicker.js"></script>
+    <script>
+    $(document).ready(function () {
+         $('.DocFilterDate').daterangepicker({
+                locale: {
+                      format: 'DD/MM/YYYY',
+                }
+
+            });
+
+          $(document).on("click", ".applyBtn", function () {
+                $(".DateSelected").val(1);
+          })
+
+        
+           $(document).on("click", ".cancelBtn", function () {
+                    $('.DocFilterDate').val("");
+                $('.DocFilterDate').daterangepicker({
+                    locale: {
+                        format: 'DD/MM/YYYY'
+                    }
+                });
+                   $(".DateSelected").val(0);
+           })
+
+        $(document).on("click", "#Users", function () {
+            if ($("#myDropdown").hasClass('show')) {
+                $("#myDropdown").removeClass("show");
+            } else {
+                $("#myDropdown").addClass("show");
+            }
+        })
+
+
+        $(document).on("click", ".UserName", function () {
+            $("#Users").val($(this).text());
+            $("#Users").data('userid', $(this).data('userid'));
+            $("#myDropdown").removeClass("show");
+        })
+
+        $(document).on("click", function (e) {
+            if (e.target.className !== "form-control") {
+                $("#myDropdown").removeClass("show");
+            };
+        })
+
+
+          $(".ItemTypeList").change(function () {
+                if ($(".ItemTypeList option:selected").val() > 0) {
+                     $(".DocumentTypeList").html(""); 
+                    $.ajax({
+                        type: 'POST',
+                        url: '@Url.Action("GetUserDocTypes","Document")',
+                        data: { ItemTypeId: parseInt($(".ItemTypeList option:selected").val()) },
+                        success: function (data) {
+                            var html = "<option value='0'>Select DocumentType</option>";
+                            for (var i = 0; i < data.length; i++) {                              
+                                    html += "<option value=" + data[i].Id + ">" + data[i].Name + "</option>";                              
+                            }
+                            $(".DocumentTypeList").append(html);                           
+                        }
+                    });
+                }
+                
+            })
+
+        $(document).on("click", "#FilterDocViewers", function () {
+            var DocDates;
+            var FromDate = "";
+            var ToDate = "";
+            if ($(".DateSelected").val() > 0) {
+                DocDates = $(".DocFilterDate").val();
+                DocDates = DocDates.split(' - ')
+                FromDate = DocDates[0].split('/');
+                FromDate = FromDate[1] + "/" + FromDate[0] + "/" + FromDate[2];
+
+                ToDate = DocDates[1].split('/');
+                ToDate = ToDate[1] + "/" + ToDate[0] + "/" + ToDate[2];
+
+            }
+
+
+               var UserId = $("#Users").data('userid');
+               var itid = $(".ItemTypeList option:selected").val();
+            var dtid = $(".DocumentTypeList option:selected").val();
+
+                    $.ajax({
+                            type: 'POST',
+                            url: '@Url.Action("AccessHistoryFiltered","Document")',
+                            beforeSend: function () {
+                                $("#cover-spin").show();
+                            },
+                            data: { From: FromDate, To: ToDate, UId: UserId, ItId: itid, DtId: dtid },
+                            complete: function () {
+                                setTimeout(function () { $("#cover-spin").hide(); }, 1000);
+                            },
+                            success: function (data) {
+                                if (data != null) {
+                                    if (data.length > 0) {
+                                        $(".AllDocViewers").html("");
+                                        $(".AllDocViewers").html(data);
+                                        $('.datatable').DataTable({ "paging": true, "info": true, "ordering": false, "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]], "language": { "emptyTable": "No Record Found" } }); $('.datatable').attr('style', 'border-collapse: collapse !important');
+                                    }
+                                }
+                                if ($(".AllDocViewersData").find("tr").length == 0)
+                                    $(".AllDocViewersData").html("<tr><td class='text-center' colspan='5'>No Record Foound</td></tr>");
+                            }
+                        })
+
+            })
+
+
+          $('#Users').keyup(function () {
+            if ($(this).val().length == 0)
+               $(this).data("userid", "");
+            })
+
+    })
+
+      function filterFunction() {
+          var input, filter, ul, li, a, i, content;
+              content = document.getElementById("myDropdown");
+              content.classList.add('show');
+            input = document.getElementById("Users");
+            filter = input.value.toUpperCase();
+            div = document.getElementById("myDropdown");
+            a = div.getElementsByTagName("a");
+            for (i = 0; i < a.length; i++) {
+            txtValue = a[i].textContent || a[i].innerText;
+            if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                a[i].style.display = "block";
+            } else {
+                a[i].style.display = "none";
+            }
+            }
+    }
+
+    </script>
+}

@@ -1,0 +1,786 @@
+﻿
+@using Search_n_View.ViewModels;
+@{
+    ViewBag.Title = "Document Creation";
+    var ItemTypeList = ViewBag.ItemTypeList;
+}
+
+
+@section styles {
+    <style>
+        .p-t-20 {
+            padding-top: 5px !important;
+        }
+
+        input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        input[type=number] {
+            -moz-appearance: textfield;
+        }
+
+        .DataEntryBox input.form-control, textarea.form-control, select.form-control {
+            margin-top: 8px !important;
+            background-color: white !important;
+        }
+
+        .FileUpload, .BulkUpload {
+            padding: .200rem .48rem;
+            font-weight: 600;
+        }
+
+        .NoFileChoosen {
+            margin-top: 17%;
+            color: cadetblue
+        }
+
+        canvas {
+            width: 99% !important;
+        }
+
+        .TiffImage {
+            width: 99% !important;
+            min-height: auto;
+            max-height: 800px;
+            overflow-y: scroll;
+        }
+
+        .ImageViewer {
+            width: 99% !important;
+            min-height: auto;
+            max-height: 800px;
+            overflow-y: scroll;
+        }
+
+        .PdfViewer > object {
+            width: 99% !important;
+            height: 800px;
+            overflow-y: scroll;
+        }
+
+        .TextViewer > object {
+            width: 99% !important;
+            min-height: auto;
+            height: 800px;
+            overflow-y: scroll;
+        }
+
+        .AnotherFormat {
+            margin-top: 14%;
+            margin-bottom: 0.2rem;
+        }
+    </style>
+}
+
+
+
+<div class="mainWrapper container-fluid">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="row">
+                <h4 style="color:#525252;font-weight:700;">Document Creation</h4>
+            </div>
+        </div>
+        <div class="col-md-4">
+
+        </div>
+
+        <div class="col-md-2">
+            <div id="CurrentDate" class="pull-right" style="font-size:13px;font-weight:700;">
+                @DateTime.Now.ToString("MMMM") @DateTime.Now.ToString("dd"), @DateTime.Now.ToString("yyyy")
+
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+
+        <div class="col-md-6">
+            <div class="row">
+                <input type="file" id="SingleFile" name="file" data-singlefileupload="" style="margin-right:65px;" tabindex="1">
+            </div>
+        </div>
+        <div class="col-md-4">
+
+        </div>
+        <div class="col-md-1">
+            <label for="Email" class="btn btn-info font-weight-bold">Attach Email &nbsp;<span class="fa fa-envelope"></span></label>
+            <input type="file" id="Email" style="display:none;" name="email" data-emailfileupload="">
+
+        </div>
+        <div class="col-md-1">
+            <label for="Scan" class="btn btn-behance font-weight-bold">Scan Docs &nbsp;<span class="fa fa-qrcode"></span></label>
+            <button id="Scan" style="display:none;"></button>
+
+        </div>
+
+
+    </div>
+
+    <hr class="row" style="margin-top:0.1rem;margin-bottom:0.2rem;">
+
+    <div class="row">
+        <div class="col-md-8">
+            <h1 class="text-center NoFileChoosen">No File Added!</h1>
+            <div id="FileView" style="margin-left:-15px;">
+                @Html.Partial("_ViewDocumentBox")
+            </div>
+        </div>
+        <div class="col-md-4 DataEntryBox">
+            <div class="form-group">
+                <br>
+                <br>
+                <br>
+                <p class="text-center font-weight-bold" style="font-size:17px;letter-spacing:1px;margin-bottom:2px;">File Data Entry</p>
+
+
+                <div class="row">
+                    <div class="col-md-1">
+                        <div class="row">
+                            <span style="color: #f86c6b;font-weight:bold;font-size:20px;margin-top:13px;margin-left:10px;">*</span>
+                        </div>
+                    </div>
+                    <div class="col-md-11">
+                        <div class="row">
+                            <input type="text" class="form-control ClaimNo" placeholder="Enter VesselNo" required tabindex="1" autofocus>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-1">
+                        <div class="row">
+                            <span style="color: #f86c6b;font-weight:bold;font-size:20px;margin-top:13px;margin-left:10px;">*</span>
+                        </div>
+                    </div>
+                    <div class="col-md-11">
+                        <div class="row">
+                            <input type="text" class="form-control PolicyNo" placeholder="Enter CommodityNo" required tabindex="2">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-1">
+                        <div class="row">
+                            <span style="color: #f86c6b;font-weight:bold;font-size:20px;margin-top:13px;margin-left:10px;visibility:hidden">*</span>
+                        </div>
+                    </div>
+                    <div class="col-md-11">
+                        <div class="row">
+                            <input type="text" class="form-control Year" placeholder="Enter Year" tabindex="3" maxlength="4">
+                        </div>
+                    </div>
+                </div>
+
+
+
+                <div class="row">
+                    <div class="col-md-1">
+                        <div class="row">
+                            <span style="color: #f86c6b;font-weight:bold;font-size:20px;margin-top:13px;margin-left:10px;">*</span>
+                        </div>
+                    </div>
+                    <div class="col-md-11">
+                        <div class="row">
+
+                            <select class="form-control ItemTypeList m-t-5" tabindex="5">
+                                @if (ItemTypeList != null)
+                                {
+                                    if (ItemTypeList.Count > 0)
+                                    {
+                                        <option value="0" data-shortname="0">Select ItemType</option>
+                                        for (int i = 0; i < ItemTypeList.Count; i++)
+                                        {
+                                            if (ItemTypeList[i].Name != "All")
+                                            {
+                                                <option value="@ItemTypeList[i].Id">@ItemTypeList[i].Name</option>
+                                            }
+                                        }
+                                    }
+                                }
+                            </select>
+
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-1">
+                        <div class="row">
+                            <span style="color: #f86c6b;font-weight:bold;font-size:20px;margin-top:13px;margin-left:10px;">*</span>
+                        </div>
+                    </div>
+                    <div class="col-md-11">
+                        <div class="row">
+
+                            <select class="form-control DocumentTypeList DocFilters" tabindex="6">
+                                <option value="0">Select DocumentType</option>
+                            </select>
+
+                        </div>
+                    </div>
+                </div>
+
+
+
+                <br>
+                <div class="row">
+                    <div class="col-md-1">
+                        <div class="row">
+                            <span style="color: #f86c6b;font-weight:bold;font-size:20px;margin-top:13px;margin-left:10px;"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-11">
+                        <div class="row">
+                            <button class="btn btn-primary SingleFileUpload" type="button" style="display:none;width:100%;" tabindex="4">Upload</button>
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<button id="CheckFile" type="button" style="display:none;"></button>
+
+
+<div class="modal fade" id="SendEmailModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-md modal-primary" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Send Email</h4>
+                <button class="close closeModal" type="button" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <input type="text" class="form-control" id="ToEmail" name="ToEmail" data-emailrecipients="" placeholder="Enter Recipients Semicolon(;) Seperated...">
+                    <input type="text" class="form-control" id="BccEmail" name="BccEmail" placeholder="Enter Bcc Recipients Semicolon(;) Seperated...">
+                    <textarea class="form-control" id="EmailHeader" placeholder="Enter Email Subject..." rows="1"></textarea>
+                    <textarea class="form-control" id="EmailBody" placeholder="Enter Email Body..." rows="2"></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary SendEmail" data-dismiss="modal" style="display:none;">Send</button>
+                <button class="btn btn-warning closeModal" type="button" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts {
+    <script src="~/Scripts/tiff.min.js"></script>
+    <script>
+        $(document).ready(function () {
+
+            $('.ClaimNo').on('keypress', function (event) {
+                var regex = new RegExp("^[0-9]+$");
+                var key = String.fromCharCode(!event.charCode ? event.which : event.charCode);
+                if (!regex.test(key)) {
+                    event.preventDefault();
+                    return false;
+                }
+            });
+
+            $('.PolicyNo').on('keypress', function (event) {
+                var regex = new RegExp("^[a-zA-Z0-9]+$");
+                var key = String.fromCharCode(!event.charCode ? event.which : event.charCode);
+                if (!regex.test(key)) {
+                    event.preventDefault();
+                    return false;
+                }
+            });
+
+            $('.Year').on('keypress', function (event) {
+                var regex = new RegExp("^[0-9]+$");
+                var key = String.fromCharCode(!event.charCode ? event.which : event.charCode);
+                if (!regex.test(key)) {
+                    event.preventDefault();
+                    return false;
+                }
+            });
+
+
+            $(".ItemTypeList").change(function () {
+                if ($(".ItemTypeList option:selected").val() > 0) {
+                    $(".DocumentTypeList").html("");
+                    $.ajax({
+                        type: 'POST',
+                        url: '@Url.Action("GetUserDocTypes","Document")',
+                        data: { ItemTypeId: parseInt($(".ItemTypeList option:selected").val()) },
+                        success: function (data) {
+                            var html = "<option value='0' disabled>Select DocumentType</option>";
+                            for (var i = 0; i < data.length; i++) {
+                                html += "<option value=" + data[i].Id + ">" + data[i].Name + "</option>";
+                            }
+                            $(".DocumentTypeList").append(html);
+                            $(".DocumentTypeList").focus();
+                        }
+                    });
+                }
+
+            })
+
+            $("#Scan").click(function () {
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "Want To Scan Document!",
+                    type: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: 'grey',
+                    confirmButtonText: 'Yes'
+                }).then((result) => {
+                    if (result.value) {
+                        $.ajax({
+                            type: 'POST',
+                            url: '@Url.Action("FileTempScanUpload","Document")',
+                            beforeSend: function () {
+                                $("#cover-spin").show();
+                            },
+                            success: function (data) {
+                                if (data != null) {
+                                    $(".NoFileChoosen").hide();
+                                    $("#FileView").html("");
+                                    $("#FileView").html(data.trim());
+                                    if ($(".anchor").find(".TiffImage").length > 0) {
+                                        Tiff.initialize({ TOTAL_MEMORY: 1000000000 });
+                                        var path = $(".TiffImage").data("path");
+                                        var xhr = new XMLHttpRequest();
+                                        xhr.responseType = 'arraybuffer';
+                                        xhr.open('GET', path);
+                                        xhr.onload = function (e) {
+                                            var tiff = new Tiff({ buffer: xhr.response });
+                                            for (var i = 0, len = tiff.countDirectory(); i < len; ++i) {
+                                                tiff.setDirectory(i);
+                                                var canvas = tiff.toCanvas();
+                                                $('.TiffImage').append(canvas);
+                                            }
+                                        }
+                                        xhr.send();
+                                    }
+                                      if ($("#ScannerConnection").val() == "false") {
+                                        Swal.fire({
+                                            title: 'Something Went Wrong!',
+                                            text: 'Scanner Not Connected Or No Document!',
+                                            timer: 2000,
+                                            type: 'warning',
+                                            showCancelButton: false,
+                                            showConfirmButton: false
+                                        })
+                                           $(".SingleFileUpload").hide();
+                                            $(".NoFileChoosen").fadeIn();
+                                    }
+                                      $(".SingleFileUpload").fadeIn();
+                                } else {                                 
+                                    $(".SingleFileUpload").hide();
+                                    $(".NoFileChoosen").fadeIn();
+                                }
+                                setTimeout(function () { $("#cover-spin").hide(); }, 2000);
+                            }
+
+                        })
+                    }
+                })
+            })
+
+
+            $("#SingleFile").change(function () {
+                var fileUpload = $("#SingleFile").get(0);
+                var files = fileUpload.files;
+                var fileData = new FormData();
+                for (var i = 0; i < files.length; i++) {
+                    fileData.append(files[i].name, files[i]);
+                }
+
+                fileData.append('SingleFile', 'File');
+                $(this).data("singlefileupload", fileData);
+
+                if ($("#SingleFile").data("singlefileupload") != "") {
+                    $(".SingleFileUpload").fadeIn();
+                    var SingleFile = $("#SingleFile").data("singlefileupload");
+                    $.ajax({
+                        type: 'POST',
+                        url: '@Url.Action("FileTempUpload","Document")',
+                        processData: false,
+                        contentType: false,
+                        data: SingleFile,
+                        beforeSend: function () {
+                            $("#cover-spin").show();
+                        },
+                        success: function (data) {
+                            if (data != null) {
+                                $(".NoFileChoosen").hide();
+                                $("#FileView").html("");
+                                $("#FileView").html(data.trim());
+                                if ($(".anchor").find(".TiffImage").length > 0) {
+                                    Tiff.initialize({ TOTAL_MEMORY: 1000000000 });
+                                    var path = $(".TiffImage").data("path");
+                                    var xhr = new XMLHttpRequest();
+                                    xhr.responseType = 'arraybuffer';
+                                    xhr.open('GET', path);
+                                    xhr.onload = function (e) {
+                                        var tiff = new Tiff({ buffer: xhr.response });
+                                        for (var i = 0, len = tiff.countDirectory(); i < len; ++i) {
+                                            tiff.setDirectory(i);
+                                            var canvas = tiff.toCanvas();
+                                            $('.TiffImage').append(canvas);
+                                        }
+                                    }
+                                    xhr.send();
+                                }
+                            } else {                           
+                                $(".SingleFileUpload").hide();
+                                $(".NoFileChoosen").fadeIn();
+                            }
+                            setTimeout(function () { $("#cover-spin").hide(); }, 2000);
+                        }
+
+                    })
+                }
+            })
+
+
+            $("#Email").change(function () {
+                var fileUpload = $("#Email").get(0);
+                var files = fileUpload.files;
+                var fileData = new FormData();
+                var Name = "";
+                for (var i = 0; i < files.length; i++) {
+                    Name = files[i].name;
+                    fileData.append(files[i].name, files[i]);
+                }
+                if (Name.includes(".msg") || Name.includes(".MSG")) {
+                    fileData.append('EmailFile', 'File');
+                    $(this).data("emailfileupload", fileData);
+
+                    if ($("#Email").data("emailfileupload") != "") {
+                        var EmailFile = $("#Email").data("emailfileupload");
+                        $.ajax({
+                            type: 'POST',
+                            url: '@Url.Action("FileTempEmailUpload","Document")',
+                            processData: false,
+                            contentType: false,
+                            data: EmailFile,
+                            beforeSend: function () {
+                                $("#cover-spin").show();
+                            },
+                            success: function (data) {
+                                if (data != null) {
+                                    $(".NoFileChoosen").hide();
+                                    $("#FileView").html("");
+                                    $("#FileView").html(data.trim());
+                                    if ($(".anchor").find(".TiffImage").length > 0) {
+                                        Tiff.initialize({ TOTAL_MEMORY: 1000000000 });
+                                        var path = $(".TiffImage").data("path");
+                                        var xhr = new XMLHttpRequest();
+                                        xhr.responseType = 'arraybuffer';
+                                        xhr.open('GET', path);
+                                        xhr.onload = function (e) {
+                                            var tiff = new Tiff({ buffer: xhr.response });
+                                            for (var i = 0, len = tiff.countDirectory(); i < len; ++i) {
+                                                tiff.setDirectory(i);
+                                                var canvas = tiff.toCanvas();
+                                                $('.TiffImage').append(canvas);
+                                            }
+                                        }
+                                        xhr.send();
+                                    }
+                                    $(".SingleFileUpload").fadeIn();
+                                } else {
+                                    Alert("Something Went Wrong!");
+                                }
+                                setTimeout(function () { $("#cover-spin").hide(); }, 2000);
+                            }
+
+                        })
+                    }
+                } else {
+                    Swal.fire({
+                        title: 'Not An Email Envelope!',
+                        text: 'Please Insert .msg File',
+                        timer: 1500,
+                        type: 'warning',
+                        showCancelButton: false,
+                        showConfirmButton: false
+                    })
+                }
+            })
+
+
+            $(document).on("click", ".SingleFileUpload", function () {
+                var ScannedFilePath = $("#ScannedFilePath").val();
+                var Doc = {
+                    ClaimNo: $(".ClaimNo").val().trim(),
+                    PolicyNo: $(".PolicyNo").val().trim(),
+                    Year: $(".Year").val().trim(),
+                    ItId: $(".ItemTypeList option:selected").val(),
+                    DtId: $(".DocumentTypeList option:selected").val()
+                };
+
+                    var EmailData = null;
+                    var EmailAttachment = null;
+                    var DocEmailAttach = {};
+                    var SingleFile = $("#SingleFile").data("singlefileupload");
+                    if ($("#EmailDetail").val() != null && $("#EmailDetail").val() != "" && $("#EmailDetail").val() != "null") {
+                        EmailData = JSON.parse($("#EmailDetail").val())
+                        DocEmailAttach = {
+                            Recipients: EmailData.Recipients,
+                            Body: EmailData.Body,
+                            Header: EmailData.Header,
+                            DocPath: EmailData.DocPath,
+                            AttachmentName: EmailData.AttachmentName
+                        }
+                        EmailAttachment = DocEmailAttach.AttachmentName;
+                        DocEmailAttach.Body = DocEmailAttach.Body.replace("&", "and").replace("\n\n", "<br>").replace("https:", "").replace("http:", "").replace("<//www.", "").replace("/>", "").replace("www.", "")
+
+                    }
+                
+
+
+                var SingleFile = $("#SingleFile").data("singlefileupload");
+
+                if (Doc.ClaimNo != "") {
+                    if (Doc.PolicyNo != "") {
+                        if (Doc.ItId != "0") {
+                            if (Doc.DtId != "0") {
+                                if (SingleFile != "" || ScannedFilePath != null || EmailAttachment != null) {
+                                    $.ajax({
+                                        type: 'POST',
+                                        url: '@Url.Action("SingleDocumentUpload","Document")',
+                                        data: { Doc: Doc, EmailDetail: DocEmailAttach, ScannedDocPath: ScannedFilePath },
+                                        beforeSend: function () {
+                                            $("#cover-spin").show();
+                                        },
+                                        complete: function () {
+                                            setTimeout(function () { $("#cover-spin").hide(); }, 2000);
+                                        },
+                                        success: function (data) {
+                                            if (data == false) {
+                                                alert("Something Wrong Try Again!")
+                                                $("#SingleFile").val("");
+                                                $("#Email").val("");
+                                                $("#SingleFile").data("singlefileupload", "")
+                                                $("#Email").data("emailfileupload", "")
+                                                $(".SingleFileUpload").hide();
+                                                $(".NoFileChoosen").hide();
+                                            } else if (data.Exist) {
+                                                $(".ClaimNo").focus();
+                                                Swal.fire({
+                                                    title: 'Entry Already Exists!',
+                                                    timer: 1500,
+                                                    type: 'warning',
+                                                    showCancelButton: false,
+                                                    showConfirmButton: false
+                                                })
+                                                $(".ClaimNo").css("border", "1px solid red");
+                                            } else {
+                                                $(".ClaimNo").val("");
+                                                $(".PolicyNo").val("");
+                                                $(".Year").val("");
+                                                $(".ItemTypeList").val(0);
+                                                $(".DocumentTypeList").val(0);
+                                                $("#SingleFile").val("");
+                                                $("#SingleFile").data("singlefileupload", "")
+                                                $(".SingleFileUpload").hide();
+                                                $(".NoFileChoosen").hide();
+                                                $.ajax({
+                                                    type: 'POST',
+                                                    url: '@Url.Action("SingleFileUpload","Document")',
+                                                    processData: false,
+                                                    contentType: false,
+                                                    data: SingleFile,
+                                                    beforeSend: function () {
+                                                        $("#cover-spin").show();
+                                                    },
+                                                    complete: function () {
+                                                        setTimeout(function () { $("#cover-spin").hide(); }, 1000);
+                                                    },
+                                                    success: function (data) {
+                                                        if (data != null) {
+                                                            Swal.fire({
+                                                                title: 'File Added!',
+                                                                timer: 2000,
+                                                                type: 'success',
+                                                                showCancelButton: false,
+                                                                showConfirmButton: false
+                                                            })
+                                                            setTimeout(function () { location.reload(true); }, 2000);
+                                                        }
+                                                    }
+                                                })
+
+                                            }
+                                        }
+                                    })
+                                } else {
+                                    if ($("#EmailDetail").val() != null && $("#EmailDetail").val() != "")
+                                        alert("Not a Valid Attachment in Email Envelope.")
+                                    else
+                                        alert("Please Add File First.")
+                                }
+                            } else {
+                                $(".ItemTypeList").css("border", "1px solid red");
+                                $(".ItemTypeList").focus();
+                                return false;
+                            }
+                        } else {
+                            $(".DocumentTypeList").css("border", "1px solid red");
+                            $(".DocumentTypeList").focus();
+                            return false;
+                        }
+                    } else {
+                        $(".PolicyNo").css("border", "1px solid red");
+                        return false;
+                    }
+                } else {
+                    $(".ClaimNo").css("border", "1px solid red");
+                    return false;
+                }
+
+
+            })
+
+            $(".ClaimNo").on("focusout", function (e) {
+                if ($(this).val().length > 0) {
+
+                    Swal.mixin({
+                        confirmButtonText: 'Check',
+                        focusConfirm: false,
+                        input: 'number',
+                        inputPlaceholder: 'Vessel No',
+                        allowOutsideClick: false,
+                    }).queue([
+                        {
+                            title: 'Re-Enter VesselNo',
+                        }
+                    ]).then((result) => {
+                        if (result.value) {
+                            if (!ClaimNo(result.value)) {
+                                Swal.fire({
+                                    title: 'VesselNo MissMatch!',
+                                    text: 'Please Check Again',
+                                    type: 'warning',
+                                    timer: 2000,
+                                    showCancelButton: false,
+                                    showConfirmButton: false
+                                })
+                                $(".ClaimNo").focus();
+                            } else {
+                                $(".ClaimNo").css("border", "1px solid #e4e7ea");
+                                $(".PolicyNo").focus();
+                            }
+                        }
+                    })
+                }
+            })
+
+
+            $(".PolicyNo").on("focusout", function (e) {
+                if ($(this).val().length > 0) {
+
+                    Swal.mixin({
+                        confirmButtonText: 'Check',
+                        focusConfirm: false,
+                        input: 'number',
+                        inputPlaceholder: 'Commodity No',
+                        allowOutsideClick: false,
+                    }).queue([
+                        {
+                            title: 'Re-Enter CommodityNo',
+                        }
+                    ]).then((result) => {
+                        if (result.value) {
+                            if (!PolicyNo(result.value)) {
+                                Swal.fire({
+                                    title: 'CommodityNo MissMatch!',
+                                    text: 'Please Check Again',
+                                    type: 'warning',
+                                    timer: 2000,
+                                    showCancelButton: false,
+                                    showConfirmButton: false
+                                })
+                                $(".PolicyNo").focus();
+                            } else {
+                                $(".PolicyNo").css("border", "1px solid #e4e7ea");
+                                $(".Year").focus();
+                            }
+                        }
+                    })
+                }
+            })
+
+             $(".Year").on("focusout", function (e) {
+                if ($(this).val().length > 0) {
+
+                    Swal.mixin({
+                        confirmButtonText: 'Check',
+                        focusConfirm: false,
+                        input: 'number',
+                        inputPlaceholder: 'Year',
+                        allowOutsideClick: false,
+                    }).queue([
+                        {
+                            title: 'Re-Enter Year',
+                        }
+                    ]).then((result) => {
+                        if (result.value) {
+                            if (!Year(result.value)) {
+                                Swal.fire({
+                                    title: 'Year MissMatch!',
+                                    text: 'Please Check Again',
+                                    type: 'warning',
+                                    timer: 2000,
+                                    showCancelButton: false,
+                                    showConfirmButton: false
+                                })
+                                $(".Year").focus();
+                            } else {
+                                $(".Year").css("border", "1px solid #e4e7ea");
+                                $(".ItemTypeList").focus();
+                            }
+                        }
+                    })
+                }
+            })
+             })
+
+
+            function ClaimNo(val) {
+            if ($(".ClaimNo").val() != val) {
+                return false;
+            }else
+                return true;
+            }
+
+        function PolicyNo(val) {
+            if ($(".PolicyNo").val() != val) {
+                return false;
+            }else
+                return true;
+            }
+
+
+        function Year(val) {
+            if ($(".Year").val() != val) {
+                return false;
+            }else
+                return true;
+            }
+
+
+
+
+
+
+
+    </script>
+}

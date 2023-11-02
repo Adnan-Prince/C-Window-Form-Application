@@ -1,0 +1,117 @@
+﻿@model Search_n_View.ViewModels.ManageDocumentTypesModel
+@{
+    ViewBag.Title = "Manage Document Types";
+}
+
+@section styles {
+    <style>
+        td .btn-primary, .btn-danger {
+            padding: .175rem .55rem;
+        }
+    </style>
+}
+
+<div>
+    <div class="animated fadeIn">
+        <div class="card">
+            <div class="card-header">
+                <i class="fa fa-list"></i> Document Types
+                <div class="card-header-actions">
+                    <a class="btn btn-info" href="@Url.Action("CreateDocType", "Document")">
+                        <i class="fa fa-plus"></i> Add Document Type
+                    </a>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-striped  datatable">
+                        <thead>
+                            <tr>
+                                <th class="text-center">Name</th>
+                                <th class="text-center">Code</th>
+                                <th class="text-center">Category</th>
+                                <th class="text-center">Added By</th>
+                                <th class="text-center">Added Date</th>
+                                <th class="no-sort text-center">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                            @foreach (var Type in Model.DocumentTypes)
+                            {
+                                <tr>
+                                    @if (Type.Type != "")
+                                    {
+                                        <td class="text-center">@Type.Type</td>
+                                    }
+                                    else
+                                    {
+                                        <td class="text-center">-</td>
+                                    }
+                                    <td class="text-center">@Type.DocumentTypeCode</td>
+                                    <td class="text-center">@Type.DocumentCategory</td>
+                                    <td class="text-center">@Type.AddedBy</td>
+                                    <td class="text-center">@Type.AddedTime.ToString("dd MMM yyyy HH:mm")</td>
+                                    <td class="text-center">
+                                        <a class="btn btn-primary" title="Edit" href="@Url.Action("EditDocType", "Document", new { DocTypeCode = Type.DocumentTypeCode })">
+                                            <i class="fa fa-edit"></i>
+                                        </a>
+                                        <a class="btn btn-danger" title="Delete" href="javascript:void(0)" onclick="DeleteDocumentType('@Type.DocumentTypeCode')">
+                                            <i class="fa fa-trash-o"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            </div>
+    </div>
+</div>
+
+@section scripts
+{
+    <script type="text/javascript">
+        function DeleteDocumentType(Code) {
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
+                type: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+                if (result.value) {
+                    $.ajax({
+                        url: '@Url.Action("DeleteDocType", "Document")',
+                        type: 'post',
+                        contentType: 'application/x-www-form-urlencoded',
+                        data: { "DocTypeCode": Code },
+                        success: function (data, textStatus, jQxhr) {
+                            Swal.fire({
+                                type: 'success',
+                                title: 'Deleted!',
+                                text: 'User Deleted Successfully.'
+                            }).then((result) => {
+                                if (result.value) {
+                                    location.reload();
+                                }
+                            });
+
+                        },
+                        error: function (jqXhr, textStatus, errorThrown) {
+                            Swal.fire({
+                                type: 'error',
+                                title: 'Some error occured',
+                                text: 'Please try again'
+                            });
+                        }
+                    });
+
+                }
+            })
+        }
+    </script>
+}
